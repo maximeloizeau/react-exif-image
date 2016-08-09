@@ -37,22 +37,7 @@ const config = {
     root: SRC_DIR,
   },
 
-  eslint: {
-    failOnError   : false,
-    failOnWarning : false,
-    emitError     : true,
-    emitWarning   : true,
-    formatter     : require('eslint-friendly-formatter'),
-  },
-
   module: {
-    preLoaders: [
-      {
-        test: /\.jsx?$/,
-        include: SRC_DIR,
-        loader: 'eslint-loader',
-      }
-    ],
 
     loaders: [
       {

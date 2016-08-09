@@ -1,5 +1,6 @@
 import React from 'react';
-import loadImage from './loadImage';
+import { findDOMNode } from 'react-dom';
+import loadImage from './load-image';
 
 export default class ExifImage extends React.Component {
   static propTypes = {
@@ -75,33 +76,34 @@ export default class ExifImage extends React.Component {
   }
 
   processImageBuffer({response, contentType}){
+    let options = { orientation: true };
+
+    if(this.props.maxWidth) options.maxWidth = this.props.maxWidth;
+    if(this.props.maxHeight) options.maxHeight = this.props.maxHeight;
+
     loadImage.parseMetaData(new Blob([response], {type: contentType}),
       (data) => {
-        const orientation = data.exif.getAll().Orientation;
-        this.setState({
-          imgStyle: this.rotationStyleMap[orientation]
-        });
-        if(this.willRotate.indexOf(orientation) > -1){
-          const imgTag = React.findDOMNode(this.refs.img);
-          const containerStyle = Object
-            .assign(this.state.containerStyle, {
-              height: imgTag.offsetWidth
-            });
-          this.setState({
-            containerStyle
-          });
-        }
+        console.log(data.exif);
+        const orientation = data.exif.get('Orientation');
+        loadImage(
+          new Blob([response]),
+          (canvas) => {
+            findDOMNode(this).querySelector('canvas').height = canvas.height;
+            findDOMNode(this).querySelector('canvas').width = canvas.width;
+            findDOMNode(this).querySelector('canvas').getContext('2d').drawImage(canvas, 0, 0);
+            return canvas;
+          },
+          options
+        );
       }
     );
   }
 
-  handleUrlUpdate(url){
+  handleUrlUpdate(url) {
     return this
       .fetchImage(url)
-      .then(this.processImageBuffer)
-      .catch((e) => {
-        console.error(e);
-      });
+      .then(this.processImageBuffer.bind(this))
+
   }
 
   componentDidMount(){
@@ -119,11 +121,7 @@ export default class ExifImage extends React.Component {
       <div
         className="wi-ExifImage-Container"
         style={this.state.containerStyle}>
-        <img
-          {...this.props}
-          style={this.state.imgStyle}
-          ref="img"
-          src={this.props.urlValue}/>
+        <canvas></canvas>
       </div>
     );
   }
