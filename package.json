@@ -7,7 +7,9 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "postinstall": "webpack"
   },
-  "files": ["./src"],
+  "files": [
+    "./src"
+  ],
   "keywords": [
     "exif",
     "react",
@@ -17,22 +19,23 @@
   ],
   "author": "tom hirschfeld",
   "license": "ISC",
-  "dependencies": {
-    "react": "0.13.3"
-  },
   "devDependencies": {
-    "babel-core": "^5.4.7",
-    "babel-es6-polyfill": "^1.0.1",
-    "babel-eslint": "^3.1.9",
-    "babel-loader": "^5.1.3",
-    "babel-runtime": "^5.8.20",
-    "eslint": "^0.21.2",
-    "eslint-friendly-formatter": "^1.0.8",
-    "eslint-loader": "^0.11.2",
-    "eslint-plugin-react": "^2.3.0",
-    "lodash.merge": "^3.3.1",
-    "webpack": "^1.9.10",
-    "webpack-config": "^0.7.0",
-    "webpack-dev-server": "^1.9.0"
+    "babel-core": "^6.13.2",
+    "babel-es6-polyfill": "*",
+    "babel-eslint": "^6.1.2",
+    "babel-loader": "^6.2.4",
+    "babel-plugin-transform-class-properties": "^6.11.5",
+    "babel-preset-es2015": "^6.13.2",
+    "babel-preset-react": "^6.11.1",
+    "babel-runtime": "^6.11.6",
+    "eslint": "^3.2.2",
+    "eslint-friendly-formatter": "^2.0.6",
+    "eslint-loader": "^1.5.0",
+    "eslint-plugin-react": "^6.0.0",
+    "lodash.merge": "^4.5.1",
+    "react": "^15.3.0",
+    "webpack": "*",
+    "webpack-config": "^6.1.2",
+    "webpack-dev-server": "*"
   }
 }

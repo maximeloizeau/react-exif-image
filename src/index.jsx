@@ -1,7 +1,11 @@
-import React from 'react/addons';
+import React from 'react';
 import loadImage from './loadImage';
 
 export default class ExifImage extends React.Component {
+  static propTypes = {
+    urlValue: React.PropTypes.string,
+  }
+
   constructor(props) {
     super(props, ExifImage);
 
@@ -50,10 +54,6 @@ export default class ExifImage extends React.Component {
     };
   }
 
-  static propTypes = {
-    urlValue: React.PropTypes.string,
-  }
-
   fetchImage(imageUrl){
     let xhr = new XMLHttpRequest();
     xhr.open( 'GET', imageUrl, true );
@@ -86,7 +86,7 @@ export default class ExifImage extends React.Component {
           const containerStyle = Object
             .assign(this.state.containerStyle, {
               height: imgTag.offsetWidth
-          });
+            });
           this.setState({
             containerStyle
           });

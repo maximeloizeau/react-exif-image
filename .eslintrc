@@ -31,15 +31,11 @@
     "key-spacing"                   : 0,
     "indent"                        : [2, 2],
     "quotes"                        : [2, "single"],
-    "new-cap"                       : 0,
     "no-debugger"                   : 0,
     "no-underscore-dangle"          : 0,
     "no-undef"                      : 2,
-    "space-infix-ops"               : 0,
     "react/display-name"            : 0,
     "react/jsx-boolean-value"       : 1,
-    "react/jsx-uses-react"          : 1,
-    "react/jsx-quotes"              : 1,
     "react/jsx-no-undef"            : 2,
     "react/jsx-sort-props"          : 0,
     "react/jsx-sort-prop-types"     : 0,
@@ -53,6 +49,7 @@
     "react/react-in-jsx-scope"      : 0,
     "react/self-closing-comp"       : 1,
     "react/wrap-multilines"         : 1,
-    "no-shadow"                     : 0
+    "no-shadow"                     : 0,
+    "jsx-quotes"                    : 1
   }
 }

@@ -38,7 +38,7 @@ const config = {
   },
 
   eslint: {
-    failOnError   : true,
+    failOnError   : false,
     failOnWarning : false,
     emitError     : true,
     emitWarning   : true,
@@ -58,7 +58,7 @@ const config = {
       {
         test: /\.(jsx|js)?$/,
         include: SRC_DIR,
-        loaders: ['babel-loader?optional[]=runtime']
+        loaders: ['babel-loader']
       }
     ]
   }
@@ -73,4 +73,4 @@ const appConfig = merge({}, config, {
 
 });
 
-module.exports = webpackConfig.fromObject(appConfig);
+module.exports = appConfig;
