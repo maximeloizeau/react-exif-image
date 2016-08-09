@@ -155,8 +155,6 @@ module.exports =
 	      if (this.props.maxHeight) options.maxHeight = this.props.maxHeight;
 
 	      _loadImage2.default.parseMetaData(new Blob([response], { type: contentType }), function (data) {
-	        console.log(data.exif);
-	        var orientation = data.exif.get('Orientation');
 	        (0, _loadImage2.default)(new Blob([response]), function (canvas) {
 	          (0, _reactDom.findDOMNode)(_this2).querySelector('canvas').height = canvas.height;
 	          (0, _reactDom.findDOMNode)(_this2).querySelector('canvas').width = canvas.width;

@@ -83,8 +83,6 @@ export default class ExifImage extends React.Component {
 
     loadImage.parseMetaData(new Blob([response], {type: contentType}),
       (data) => {
-        console.log(data.exif);
-        const orientation = data.exif.get('Orientation');
         loadImage(
           new Blob([response]),
           (canvas) => {
