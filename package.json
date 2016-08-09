@@ -1,14 +1,11 @@
 {
   "name": "react-exif-image",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "A react component that correctly displays images with orientation information stored in EXIF metadata",
   "main": "build/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "files": [
-    "./src"
-  ],
   "keywords": [
     "exif",
     "react",
