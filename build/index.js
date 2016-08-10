@@ -53,15 +53,15 @@ module.exports =
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _react = __webpack_require__(177);
+	var _react = __webpack_require__(180);
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _reactDom = __webpack_require__(107);
+	var _reactDom = __webpack_require__(110);
 
-	var _loadImage = __webpack_require__(18);
+	var _blueimpLoadImage = __webpack_require__(92);
 
-	var _loadImage2 = _interopRequireDefault(_loadImage);
+	var _blueimpLoadImage2 = _interopRequireDefault(_blueimpLoadImage);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -74,50 +74,10 @@ module.exports =
 	var ExifImage = function (_React$Component) {
 	  _inherits(ExifImage, _React$Component);
 
-	  function ExifImage(props) {
+	  function ExifImage() {
 	    _classCallCheck(this, ExifImage);
 
-	    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(ExifImage).call(this, props, ExifImage));
-
-	    _this.willRotate = ['right-top', 'left-top', 'left-bottom', 'right-bottom'];
-
-	    _this.rotationStyleMap = {
-	      'right-top': {
-	        transform: 'rotate(0.25turn)'
-	      },
-
-	      'left-top': {
-	        transform: 'rotate(0.25turn) scaleY(-1)'
-	      },
-
-	      'top-right': {
-	        transform: 'scaleX(-1)'
-	      },
-
-	      'top-left': {},
-
-	      'bottom-right': {
-	        transform: 'rotate(0.5turn)'
-	      },
-
-	      'bottom-left': {
-	        transform: 'rotate(0.5turn) scaleX(-1)'
-	      },
-
-	      'left-bottom': {
-	        transform: 'rotate(-0.25turn)'
-	      },
-
-	      'right-bottom': {
-	        transform: 'rotate(-0.25turn) scaleX(-1)'
-	      }
-	    };
-
-	    _this.state = {
-	      imgStyle: {},
-	      containerStyle: {}
-	    };
-	    return _this;
+	    return _possibleConstructorReturn(this, Object.getPrototypeOf(ExifImage).apply(this, arguments));
 	  }
 
 	  _createClass(ExifImage, [{
@@ -149,13 +109,14 @@ module.exports =
 	      var response = _ref.response;
 	      var contentType = _ref.contentType;
 
-	      var options = { orientation: true };
+	      var options = this.props.options || {};
 
-	      if (this.props.maxWidth) options.maxWidth = this.props.maxWidth;
-	      if (this.props.maxHeight) options.maxHeight = this.props.maxHeight;
+	      var imageBlob = new Blob([response], { type: contentType });
+	      _blueimpLoadImage2.default.parseMetaData(imageBlob, function (data) {
+	        var orientation = data.exif ? data.exif.get('Orientation') : 0;
+	        options.orientation = orientation;
 
-	      _loadImage2.default.parseMetaData(new Blob([response], { type: contentType }), function (data) {
-	        (0, _loadImage2.default)(new Blob([response]), function (canvas) {
+	        (0, _blueimpLoadImage2.default)(imageBlob, function (canvas) {
 	          (0, _reactDom.findDOMNode)(_this2).querySelector('canvas').height = canvas.height;
 	          (0, _reactDom.findDOMNode)(_this2).querySelector('canvas').width = canvas.width;
 	          (0, _reactDom.findDOMNode)(_this2).querySelector('canvas').getContext('2d').drawImage(canvas, 0, 0);
@@ -185,9 +146,7 @@ module.exports =
 	    value: function render() {
 	      return _react2.default.createElement(
 	        'div',
-	        {
-	          className: 'wi-ExifImage-Container',
-	          style: this.state.containerStyle },
+	        { className: 'exifImage-container' },
 	        _react2.default.createElement('canvas', null)
 	      );
 	    }
@@ -197,7 +156,8 @@ module.exports =
 	}(_react2.default.Component);
 
 	ExifImage.propTypes = {
-	  urlValue: _react2.default.PropTypes.string
+	  urlValue: _react2.default.PropTypes.string,
+	  options: _react2.default.PropTypes.object
 	};
 	exports.default = ExifImage;
 
@@ -636,8 +596,8 @@ module.exports =
 
 	var _prodInvariant = __webpack_require__(4);
 
-	var DOMProperty = __webpack_require__(19);
-	var ReactDOMComponentFlags = __webpack_require__(69);
+	var DOMProperty = __webpack_require__(18);
+	var ReactDOMComponentFlags = __webpack_require__(70);
 
 	var invariant = __webpack_require__(3);
 
@@ -871,7 +831,7 @@ module.exports =
 	var debugTool = null;
 
 	if (process.env.NODE_ENV !== 'production') {
-	  var ReactDebugTool = __webpack_require__(71);
+	  var ReactDebugTool = __webpack_require__(72);
 	  debugTool = ReactDebugTool;
 	}
 
@@ -1531,10 +1491,10 @@ module.exports =
 	var _prodInvariant = __webpack_require__(4),
 	    _assign = __webpack_require__(5);
 
-	var CallbackQueue = __webpack_require__(64);
+	var CallbackQueue = __webpack_require__(65);
 	var PooledClass = __webpack_require__(17);
-	var ReactFeatureFlags = __webpack_require__(74);
-	var ReactReconciler = __webpack_require__(21);
+	var ReactFeatureFlags = __webpack_require__(75);
+	var ReactReconciler = __webpack_require__(20);
 	var Transaction = __webpack_require__(27);
 
 	var invariant = __webpack_require__(3);
@@ -2342,234 +2302,6 @@ module.exports =
 /* 18 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var __WEBPACK_AMD_DEFINE_RESULT__;var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;"use strict";
-
-	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
-
-	!function (e) {
-	  "use strict";
-	  var t = function t(e, i, a) {
-	    var o,
-	        r,
-	        n = document.createElement("img");if (n.onerror = i, n.onload = function () {
-	      !r || a && a.noRevoke || t.revokeObjectURL(r), i && i(t.scale(n, a));
-	    }, t.isInstanceOf("Blob", e) || t.isInstanceOf("File", e)) o = r = t.createObjectURL(e), n._type = e.type;else {
-	      if ("string" != typeof e) return !1;o = e, a && a.crossOrigin && (n.crossOrigin = a.crossOrigin);
-	    }return o ? (n.src = o, n) : t.readFile(e, function (e) {
-	      var t = e.target;t && t.result ? n.src = t.result : i && i(e);
-	    });
-	  },
-	      i = window.createObjectURL && window || window.URL && URL.revokeObjectURL && URL || window.webkitURL && webkitURL;t.isInstanceOf = function (e, t) {
-	    return Object.prototype.toString.call(t) === "[object " + e + "]";
-	  }, t.transformCoordinates = function () {}, t.getTransformedOptions = function (e, t) {
-	    var i,
-	        a,
-	        o,
-	        r,
-	        n = t.aspectRatio;if (!n) return t;i = {};for (a in t) {
-	      t.hasOwnProperty(a) && (i[a] = t[a]);
-	    }return i.crop = !0, o = e.naturalWidth || e.width, r = e.naturalHeight || e.height, o / r > n ? (i.maxWidth = r * n, i.maxHeight = r) : (i.maxWidth = o, i.maxHeight = o / n), i;
-	  }, t.renderImageToCanvas = function (e, t, i, a, o, r, n, s, l, d) {
-	    return e.getContext("2d").drawImage(t, i, a, o, r, n, s, l, d), e;
-	  }, t.hasCanvasOption = function (e) {
-	    return e.canvas || e.crop || !!e.aspectRatio;
-	  }, t.scale = function (e, i) {
-	    function a() {
-	      var e = Math.max((s || y) / y, (l || v) / v);e > 1 && (y *= e, v *= e);
-	    }function o() {
-	      var e = Math.min((r || y) / y, (n || v) / v);1 > e && (y *= e, v *= e);
-	    }i = i || {};var r,
-	        n,
-	        s,
-	        l,
-	        d,
-	        u,
-	        c,
-	        g,
-	        f,
-	        h,
-	        m,
-	        p = document.createElement("canvas"),
-	        S = e.getContext || t.hasCanvasOption(i) && p.getContext,
-	        b = e.naturalWidth || e.width,
-	        x = e.naturalHeight || e.height,
-	        y = b,
-	        v = x;if (S && (i = t.getTransformedOptions(e, i), c = i.left || 0, g = i.top || 0, i.sourceWidth ? (d = i.sourceWidth, void 0 !== i.right && void 0 === i.left && (c = b - d - i.right)) : d = b - c - (i.right || 0), i.sourceHeight ? (u = i.sourceHeight, void 0 !== i.bottom && void 0 === i.top && (g = x - u - i.bottom)) : u = x - g - (i.bottom || 0), y = d, v = u), r = i.maxWidth, n = i.maxHeight, s = i.minWidth, l = i.minHeight, S && r && n && i.crop ? (y = r, v = n, m = d / u - r / n, 0 > m ? (u = n * d / r, void 0 === i.top && void 0 === i.bottom && (g = (x - u) / 2)) : m > 0 && (d = r * u / n, void 0 === i.left && void 0 === i.right && (c = (b - d) / 2))) : ((i.contain || i.cover) && (s = r = r || s, l = n = n || l), i.cover ? (o(), a()) : (a(), o())), S) {
-	      if (f = i.pixelRatio, f > 1 && (p.style.width = y + "px", p.style.height = v + "px", y *= f, v *= f, p.getContext("2d").scale(f, f)), h = i.downsamplingRatio, h > 0 && 1 > h && d > y && u > v) for (; d * h > y;) {
-	        p.width = d * h, p.height = u * h, t.renderImageToCanvas(p, e, c, g, d, u, 0, 0, p.width, p.height), d = p.width, u = p.height, e = document.createElement("canvas"), e.width = d, e.height = u, t.renderImageToCanvas(e, p, 0, 0, d, u, 0, 0, d, u);
-	      }return p.width = y, p.height = v, t.transformCoordinates(p, i), t.renderImageToCanvas(p, e, c, g, d, u, 0, 0, y, v);
-	    }return e.width = y, e.height = v, e;
-	  }, t.createObjectURL = function (e) {
-	    return i ? i.createObjectURL(e) : !1;
-	  }, t.revokeObjectURL = function (e) {
-	    return i ? i.revokeObjectURL(e) : !1;
-	  }, t.readFile = function (e, t, i) {
-	    if (window.FileReader) {
-	      var a = new FileReader();if (a.onload = a.onerror = t, i = i || "readAsDataURL", a[i]) return a[i](e), a;
-	    }return !1;
-	  },  true ? !(__WEBPACK_AMD_DEFINE_RESULT__ = function () {
-	    return t;
-	  }.call(exports, __webpack_require__, exports, module), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__)) : "object" == (typeof module === "undefined" ? "undefined" : _typeof(module)) && module.exports ? module.exports = t : e.loadImage = t;
-	}(window), function (e) {
-	  "use strict";
-	   true ? !(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(18)], __WEBPACK_AMD_DEFINE_FACTORY__ = (e), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__)) : e("object" == (typeof module === "undefined" ? "undefined" : _typeof(module)) && module.exports ? require("./load-image") : window.loadImage);
-	}(function (e) {
-	  "use strict";
-	  var t = e.hasCanvasOption,
-	      i = e.transformCoordinates,
-	      a = e.getTransformedOptions;e.hasCanvasOption = function (i) {
-	    return !!i.orientation || t.call(e, i);
-	  }, e.transformCoordinates = function (t, a) {
-	    i.call(e, t, a);var o = t.getContext("2d"),
-	        r = t.width,
-	        n = t.height,
-	        s = t.style.width,
-	        l = t.style.height,
-	        d = a.orientation;if (d && !(d > 8)) switch (d > 4 && (t.width = n, t.height = r, t.style.width = l, t.style.height = s), d) {case 2:
-	        o.translate(r, 0), o.scale(-1, 1);break;case 3:
-	        o.translate(r, n), o.rotate(Math.PI);break;case 4:
-	        o.translate(0, n), o.scale(1, -1);break;case 5:
-	        o.rotate(.5 * Math.PI), o.scale(1, -1);break;case 6:
-	        o.rotate(.5 * Math.PI), o.translate(0, -n);break;case 7:
-	        o.rotate(.5 * Math.PI), o.translate(r, -n), o.scale(-1, 1);break;case 8:
-	        o.rotate(-.5 * Math.PI), o.translate(-r, 0);}
-	  }, e.getTransformedOptions = function (t, i) {
-	    var o,
-	        r,
-	        n = a.call(e, t, i),
-	        s = n.orientation;if (!s || s > 8 || 1 === s) return n;o = {};for (r in n) {
-	      n.hasOwnProperty(r) && (o[r] = n[r]);
-	    }switch (n.orientation) {case 2:
-	        o.left = n.right, o.right = n.left;break;case 3:
-	        o.left = n.right, o.top = n.bottom, o.right = n.left, o.bottom = n.top;break;case 4:
-	        o.top = n.bottom, o.bottom = n.top;break;case 5:
-	        o.left = n.top, o.top = n.left, o.right = n.bottom, o.bottom = n.right;break;case 6:
-	        o.left = n.top, o.top = n.right, o.right = n.bottom, o.bottom = n.left;break;case 7:
-	        o.left = n.bottom, o.top = n.right, o.right = n.top, o.bottom = n.left;break;case 8:
-	        o.left = n.bottom, o.top = n.left, o.right = n.top, o.bottom = n.right;}return n.orientation > 4 && (o.maxWidth = n.maxHeight, o.maxHeight = n.maxWidth, o.minWidth = n.minHeight, o.minHeight = n.minWidth, o.sourceWidth = n.sourceHeight, o.sourceHeight = n.sourceWidth), o;
-	  };
-	}), function (e) {
-	  "use strict";
-	   true ? !(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(18)], __WEBPACK_AMD_DEFINE_FACTORY__ = (e), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__)) : e("object" == (typeof module === "undefined" ? "undefined" : _typeof(module)) && module.exports ? require("./load-image") : window.loadImage);
-	}(function (e) {
-	  "use strict";
-	  var t = window.Blob && (Blob.prototype.slice || Blob.prototype.webkitSlice || Blob.prototype.mozSlice);e.blobSlice = t && function () {
-	    var e = this.slice || this.webkitSlice || this.mozSlice;return e.apply(this, arguments);
-	  }, e.metaDataParsers = { jpeg: { 65505: [] } }, e.parseMetaData = function (t, i, a) {
-	    a = a || {};var o = this,
-	        r = a.maxMetaDataSize || 262144,
-	        n = {},
-	        s = !(window.DataView && t && t.size >= 12 && "image/jpeg" === t.type && e.blobSlice);(s || !e.readFile(e.blobSlice.call(t, 0, r), function (t) {
-	      if (t.target.error) return console.log(t.target.error), void i(n);var r,
-	          s,
-	          l,
-	          d,
-	          u = t.target.result,
-	          c = new DataView(u),
-	          g = 2,
-	          f = c.byteLength - 4,
-	          h = g;if (65496 === c.getUint16(0)) {
-	        for (; f > g && (r = c.getUint16(g), r >= 65504 && 65519 >= r || 65534 === r);) {
-	          if (s = c.getUint16(g + 2) + 2, g + s > c.byteLength) {
-	            console.log("Invalid meta data: Invalid segment size.");break;
-	          }if (l = e.metaDataParsers.jpeg[r]) for (d = 0; d < l.length; d += 1) {
-	            l[d].call(o, c, g, s, n, a);
-	          }g += s, h = g;
-	        }!a.disableImageHead && h > 6 && (u.slice ? n.imageHead = u.slice(0, h) : n.imageHead = new Uint8Array(u).subarray(0, h));
-	      } else console.log("Invalid JPEG file: Missing JPEG marker.");i(n);
-	    }, "readAsArrayBuffer")) && i(n);
-	  };
-	}), function (e) {
-	  "use strict";
-	   true ? !(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(18), __webpack_require__(59)], __WEBPACK_AMD_DEFINE_FACTORY__ = (e), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__)) : "object" == (typeof module === "undefined" ? "undefined" : _typeof(module)) && module.exports ? e(require("./load-image"), require("./load-image-meta")) : e(window.loadImage);
-	}(function (e) {
-	  "use strict";
-	  e.ExifMap = function () {
-	    return this;
-	  }, e.ExifMap.prototype.map = { Orientation: 274 }, e.ExifMap.prototype.get = function (e) {
-	    return this[e] || this[this.map[e]];
-	  }, e.getExifThumbnail = function (e, t, i) {
-	    var a, o, r;if (!i || t + i > e.byteLength) return void console.log("Invalid Exif data: Invalid thumbnail data.");for (a = [], o = 0; i > o; o += 1) {
-	      r = e.getUint8(t + o), a.push((16 > r ? "0" : "") + r.toString(16));
-	    }return "data:image/jpeg,%" + a.join("%");
-	  }, e.exifTagTypes = { 1: { getValue: function getValue(e, t) {
-	        return e.getUint8(t);
-	      }, size: 1 }, 2: { getValue: function getValue(e, t) {
-	        return String.fromCharCode(e.getUint8(t));
-	      }, size: 1, ascii: !0 }, 3: { getValue: function getValue(e, t, i) {
-	        return e.getUint16(t, i);
-	      }, size: 2 }, 4: { getValue: function getValue(e, t, i) {
-	        return e.getUint32(t, i);
-	      }, size: 4 }, 5: { getValue: function getValue(e, t, i) {
-	        return e.getUint32(t, i) / e.getUint32(t + 4, i);
-	      }, size: 8 }, 9: { getValue: function getValue(e, t, i) {
-	        return e.getInt32(t, i);
-	      }, size: 4 }, 10: { getValue: function getValue(e, t, i) {
-	        return e.getInt32(t, i) / e.getInt32(t + 4, i);
-	      }, size: 8 } }, e.exifTagTypes[7] = e.exifTagTypes[1], e.getExifValue = function (t, i, a, o, r, n) {
-	    var s,
-	        l,
-	        d,
-	        u,
-	        c,
-	        g,
-	        f = e.exifTagTypes[o];if (!f) return void console.log("Invalid Exif data: Invalid tag type.");if (s = f.size * r, l = s > 4 ? i + t.getUint32(a + 8, n) : a + 8, l + s > t.byteLength) return void console.log("Invalid Exif data: Invalid data offset.");if (1 === r) return f.getValue(t, l, n);for (d = [], u = 0; r > u; u += 1) {
-	      d[u] = f.getValue(t, l + u * f.size, n);
-	    }if (f.ascii) {
-	      for (c = "", u = 0; u < d.length && (g = d[u], "\x00" !== g); u += 1) {
-	        c += g;
-	      }return c;
-	    }return d;
-	  }, e.parseExifTag = function (t, i, a, o, r) {
-	    var n = t.getUint16(a, o);r.exif[n] = e.getExifValue(t, i, a, t.getUint16(a + 2, o), t.getUint32(a + 4, o), o);
-	  }, e.parseExifTags = function (e, t, i, a, o) {
-	    var r, n, s;if (i + 6 > e.byteLength) return void console.log("Invalid Exif data: Invalid directory offset.");if (r = e.getUint16(i, a), n = i + 2 + 12 * r, n + 4 > e.byteLength) return void console.log("Invalid Exif data: Invalid directory size.");for (s = 0; r > s; s += 1) {
-	      this.parseExifTag(e, t, i + 2 + 12 * s, a, o);
-	    }return e.getUint32(n, a);
-	  }, e.parseExifData = function (t, i, a, o, r) {
-	    if (!r.disableExif) {
-	      var n,
-	          s,
-	          l,
-	          d = i + 10;if (1165519206 === t.getUint32(i + 4)) {
-	        if (d + 8 > t.byteLength) return void console.log("Invalid Exif data: Invalid segment size.");if (0 !== t.getUint16(i + 8)) return void console.log("Invalid Exif data: Missing byte alignment offset.");switch (t.getUint16(d)) {case 18761:
-	            n = !0;break;case 19789:
-	            n = !1;break;default:
-	            return void console.log("Invalid Exif data: Invalid byte alignment marker.");}if (42 !== t.getUint16(d + 2, n)) return void console.log("Invalid Exif data: Missing TIFF marker.");s = t.getUint32(d + 4, n), o.exif = new e.ExifMap(), s = e.parseExifTags(t, d, d + s, n, o), s && !r.disableExifThumbnail && (l = { exif: {} }, s = e.parseExifTags(t, d, d + s, n, l), l.exif[513] && (o.exif.Thumbnail = e.getExifThumbnail(t, d + l.exif[513], l.exif[514]))), o.exif[34665] && !r.disableExifSub && e.parseExifTags(t, d, d + o.exif[34665], n, o), o.exif[34853] && !r.disableExifGps && e.parseExifTags(t, d, d + o.exif[34853], n, o);
-	      }
-	    }
-	  }, e.metaDataParsers.jpeg[65505].push(e.parseExifData);
-	}), function (e) {
-	  "use strict";
-	   true ? !(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(18), __webpack_require__(91)], __WEBPACK_AMD_DEFINE_FACTORY__ = (e), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__)) : "object" == (typeof module === "undefined" ? "undefined" : _typeof(module)) && module.exports ? e(require("./load-image"), require("./load-image-exif")) : e(window.loadImage);
-	}(function (e) {
-	  "use strict";
-	  e.ExifMap.prototype.tags = { 256: "ImageWidth", 257: "ImageHeight", 34665: "ExifIFDPointer", 34853: "GPSInfoIFDPointer", 40965: "InteroperabilityIFDPointer", 258: "BitsPerSample", 259: "Compression", 262: "PhotometricInterpretation", 274: "Orientation", 277: "SamplesPerPixel", 284: "PlanarConfiguration", 530: "YCbCrSubSampling", 531: "YCbCrPositioning", 282: "XResolution", 283: "YResolution", 296: "ResolutionUnit", 273: "StripOffsets", 278: "RowsPerStrip", 279: "StripByteCounts", 513: "JPEGInterchangeFormat", 514: "JPEGInterchangeFormatLength", 301: "TransferFunction", 318: "WhitePoint", 319: "PrimaryChromaticities", 529: "YCbCrCoefficients", 532: "ReferenceBlackWhite", 306: "DateTime", 270: "ImageDescription", 271: "Make", 272: "Model", 305: "Software", 315: "Artist", 33432: "Copyright", 36864: "ExifVersion", 40960: "FlashpixVersion", 40961: "ColorSpace", 40962: "PixelXDimension", 40963: "PixelYDimension", 42240: "Gamma", 37121: "ComponentsConfiguration", 37122: "CompressedBitsPerPixel", 37500: "MakerNote", 37510: "UserComment", 40964: "RelatedSoundFile", 36867: "DateTimeOriginal", 36868: "DateTimeDigitized", 37520: "SubSecTime", 37521: "SubSecTimeOriginal", 37522: "SubSecTimeDigitized", 33434: "ExposureTime", 33437: "FNumber", 34850: "ExposureProgram", 34852: "SpectralSensitivity", 34855: "PhotographicSensitivity", 34856: "OECF", 34864: "SensitivityType", 34865: "StandardOutputSensitivity", 34866: "RecommendedExposureIndex", 34867: "ISOSpeed", 34868: "ISOSpeedLatitudeyyy", 34869: "ISOSpeedLatitudezzz", 37377: "ShutterSpeedValue", 37378: "ApertureValue", 37379: "BrightnessValue", 37380: "ExposureBias", 37381: "MaxApertureValue", 37382: "SubjectDistance", 37383: "MeteringMode", 37384: "LightSource", 37385: "Flash", 37396: "SubjectArea", 37386: "FocalLength", 41483: "FlashEnergy", 41484: "SpatialFrequencyResponse", 41486: "FocalPlaneXResolution", 41487: "FocalPlaneYResolution", 41488: "FocalPlaneResolutionUnit", 41492: "SubjectLocation", 41493: "ExposureIndex", 41495: "SensingMethod", 41728: "FileSource", 41729: "SceneType", 41730: "CFAPattern", 41985: "CustomRendered", 41986: "ExposureMode", 41987: "WhiteBalance", 41988: "DigitalZoomRatio", 41989: "FocalLengthIn35mmFilm", 41990: "SceneCaptureType", 41991: "GainControl", 41992: "Contrast", 41993: "Saturation", 41994: "Sharpness", 41995: "DeviceSettingDescription", 41996: "SubjectDistanceRange", 42016: "ImageUniqueID", 42032: "CameraOwnerName", 42033: "BodySerialNumber", 42034: "LensSpecification", 42035: "LensMake", 42036: "LensModel", 42037: "LensSerialNumber", 0: "GPSVersionID", 1: "GPSLatitudeRef", 2: "GPSLatitude", 3: "GPSLongitudeRef", 4: "GPSLongitude", 5: "GPSAltitudeRef", 6: "GPSAltitude", 7: "GPSTimeStamp", 8: "GPSSatellites", 9: "GPSStatus", 10: "GPSMeasureMode", 11: "GPSDOP", 12: "GPSSpeedRef", 13: "GPSSpeed", 14: "GPSTrackRef", 15: "GPSTrack", 16: "GPSImgDirectionRef", 17: "GPSImgDirection", 18: "GPSMapDatum", 19: "GPSDestLatitudeRef", 20: "GPSDestLatitude", 21: "GPSDestLongitudeRef", 22: "GPSDestLongitude", 23: "GPSDestBearingRef", 24: "GPSDestBearing", 25: "GPSDestDistanceRef", 26: "GPSDestDistance", 27: "GPSProcessingMethod", 28: "GPSAreaInformation", 29: "GPSDateStamp", 30: "GPSDifferential", 31: "GPSHPositioningError" }, e.ExifMap.prototype.stringValues = { ExposureProgram: { 0: "Undefined", 1: "Manual", 2: "Normal program", 3: "Aperture priority", 4: "Shutter priority", 5: "Creative program", 6: "Action program", 7: "Portrait mode", 8: "Landscape mode" }, MeteringMode: { 0: "Unknown", 1: "Average", 2: "CenterWeightedAverage", 3: "Spot", 4: "MultiSpot", 5: "Pattern", 6: "Partial", 255: "Other" }, LightSource: { 0: "Unknown", 1: "Daylight", 2: "Fluorescent", 3: "Tungsten (incandescent light)", 4: "Flash", 9: "Fine weather", 10: "Cloudy weather", 11: "Shade", 12: "Daylight fluorescent (D 5700 - 7100K)", 13: "Day white fluorescent (N 4600 - 5400K)", 14: "Cool white fluorescent (W 3900 - 4500K)", 15: "White fluorescent (WW 3200 - 3700K)", 17: "Standard light A", 18: "Standard light B", 19: "Standard light C", 20: "D55", 21: "D65", 22: "D75", 23: "D50", 24: "ISO studio tungsten", 255: "Other" }, Flash: { 0: "Flash did not fire", 1: "Flash fired", 5: "Strobe return light not detected", 7: "Strobe return light detected", 9: "Flash fired, compulsory flash mode", 13: "Flash fired, compulsory flash mode, return light not detected", 15: "Flash fired, compulsory flash mode, return light detected", 16: "Flash did not fire, compulsory flash mode", 24: "Flash did not fire, auto mode", 25: "Flash fired, auto mode", 29: "Flash fired, auto mode, return light not detected", 31: "Flash fired, auto mode, return light detected", 32: "No flash function", 65: "Flash fired, red-eye reduction mode", 69: "Flash fired, red-eye reduction mode, return light not detected", 71: "Flash fired, red-eye reduction mode, return light detected", 73: "Flash fired, compulsory flash mode, red-eye reduction mode", 77: "Flash fired, compulsory flash mode, red-eye reduction mode, return light not detected", 79: "Flash fired, compulsory flash mode, red-eye reduction mode, return light detected", 89: "Flash fired, auto mode, red-eye reduction mode", 93: "Flash fired, auto mode, return light not detected, red-eye reduction mode", 95: "Flash fired, auto mode, return light detected, red-eye reduction mode" }, SensingMethod: { 1: "Undefined", 2: "One-chip color area sensor", 3: "Two-chip color area sensor", 4: "Three-chip color area sensor", 5: "Color sequential area sensor", 7: "Trilinear sensor", 8: "Color sequential linear sensor" }, SceneCaptureType: { 0: "Standard", 1: "Landscape", 2: "Portrait", 3: "Night scene" }, SceneType: { 1: "Directly photographed" }, CustomRendered: { 0: "Normal process", 1: "Custom process" }, WhiteBalance: { 0: "Auto white balance", 1: "Manual white balance" }, GainControl: { 0: "None", 1: "Low gain up", 2: "High gain up", 3: "Low gain down", 4: "High gain down" }, Contrast: { 0: "Normal", 1: "Soft", 2: "Hard" }, Saturation: { 0: "Normal", 1: "Low saturation", 2: "High saturation" }, Sharpness: { 0: "Normal", 1: "Soft", 2: "Hard" }, SubjectDistanceRange: { 0: "Unknown", 1: "Macro", 2: "Close view", 3: "Distant view" }, FileSource: { 3: "DSC" }, ComponentsConfiguration: { 0: "", 1: "Y", 2: "Cb", 3: "Cr", 4: "R", 5: "G", 6: "B" }, Orientation: { 1: "top-left", 2: "top-right", 3: "bottom-right", 4: "bottom-left", 5: "left-top", 6: "right-top", 7: "right-bottom", 8: "left-bottom" } }, e.ExifMap.prototype.getText = function (e) {
-	    var t = this.get(e);switch (e) {case "LightSource":case "Flash":case "MeteringMode":case "ExposureProgram":case "SensingMethod":case "SceneCaptureType":case "SceneType":case "CustomRendered":case "WhiteBalance":case "GainControl":case "Contrast":case "Saturation":case "Sharpness":case "SubjectDistanceRange":case "FileSource":case "Orientation":
-	        return this.stringValues[e][t];case "ExifVersion":case "FlashpixVersion":
-	        return String.fromCharCode(t[0], t[1], t[2], t[3]);case "ComponentsConfiguration":
-	        return this.stringValues[e][t[0]] + this.stringValues[e][t[1]] + this.stringValues[e][t[2]] + this.stringValues[e][t[3]];case "GPSVersionID":
-	        return t[0] + "." + t[1] + "." + t[2] + "." + t[3];}return String(t);
-	  }, function (e) {
-	    var t,
-	        i = e.tags,
-	        a = e.map;for (t in i) {
-	      i.hasOwnProperty(t) && (a[i[t]] = t);
-	    }
-	  }(e.ExifMap.prototype), e.ExifMap.prototype.getAll = function () {
-	    var e,
-	        t,
-	        i = {};for (e in this) {
-	      this.hasOwnProperty(e) && (t = this.tags[e], t && (i[t] = this.getText(t)));
-	    }return i;
-	  };
-	});
-	//# sourceMappingURL=load-image.all.min.js.map
-
-/***/ },
-/* 19 */
-/***/ function(module, exports, __webpack_require__) {
-
 	/* WEBPACK VAR INJECTION */(function(process) {/**
 	 * Copyright 2013-present, Facebook, Inc.
 	 * All rights reserved.
@@ -2779,7 +2511,7 @@ module.exports =
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
 
 /***/ },
-/* 20 */
+/* 19 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -2799,7 +2531,7 @@ module.exports =
 	var setInnerHTML = __webpack_require__(35);
 
 	var createMicrosoftUnsafeLocalFunction = __webpack_require__(50);
-	var setTextContent = __webpack_require__(90);
+	var setTextContent = __webpack_require__(91);
 
 	var ELEMENT_NODE_TYPE = 1;
 	var DOCUMENT_FRAGMENT_NODE_TYPE = 11;
@@ -2902,7 +2634,7 @@ module.exports =
 	module.exports = DOMLazyTree;
 
 /***/ },
-/* 21 */
+/* 20 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -2918,7 +2650,7 @@ module.exports =
 
 	'use strict';
 
-	var ReactRef = __webpack_require__(151);
+	var ReactRef = __webpack_require__(154);
 	var ReactInstrumentation = __webpack_require__(8);
 
 	var warning = __webpack_require__(2);
@@ -3082,6 +2814,361 @@ module.exports =
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
 
 /***/ },
+/* 21 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var __WEBPACK_AMD_DEFINE_RESULT__;/*
+	 * JavaScript Load Image
+	 * https://github.com/blueimp/JavaScript-Load-Image
+	 *
+	 * Copyright 2011, Sebastian Tschan
+	 * https://blueimp.net
+	 *
+	 * Licensed under the MIT license:
+	 * http://www.opensource.org/licenses/MIT
+	 */
+
+	/*global define, module, window, document, URL, webkitURL, FileReader */
+
+	;(function ($) {
+	  'use strict'
+
+	  // Loads an image for a given File object.
+	  // Invokes the callback with an img or optional canvas
+	  // element (if supported by the browser) as parameter:
+	  var loadImage = function (file, callback, options) {
+	    var img = document.createElement('img')
+	    var url
+	    var oUrl
+	    img.onerror = callback
+	    img.onload = function () {
+	      if (oUrl && !(options && options.noRevoke)) {
+	        loadImage.revokeObjectURL(oUrl)
+	      }
+	      if (callback) {
+	        callback(loadImage.scale(img, options))
+	      }
+	    }
+	    if (loadImage.isInstanceOf('Blob', file) ||
+	      // Files are also Blob instances, but some browsers
+	      // (Firefox 3.6) support the File API but not Blobs:
+	      loadImage.isInstanceOf('File', file)) {
+	      url = oUrl = loadImage.createObjectURL(file)
+	      // Store the file type for resize processing:
+	      img._type = file.type
+	    } else if (typeof file === 'string') {
+	      url = file
+	      if (options && options.crossOrigin) {
+	        img.crossOrigin = options.crossOrigin
+	      }
+	    } else {
+	      return false
+	    }
+	    if (url) {
+	      img.src = url
+	      return img
+	    }
+	    return loadImage.readFile(file, function (e) {
+	      var target = e.target
+	      if (target && target.result) {
+	        img.src = target.result
+	      } else {
+	        if (callback) {
+	          callback(e)
+	        }
+	      }
+	    })
+	  }
+	  // The check for URL.revokeObjectURL fixes an issue with Opera 12,
+	  // which provides URL.createObjectURL but doesn't properly implement it:
+	  var urlAPI = (window.createObjectURL && window) ||
+	                (window.URL && URL.revokeObjectURL && URL) ||
+	                (window.webkitURL && webkitURL)
+
+	  loadImage.isInstanceOf = function (type, obj) {
+	    // Cross-frame instanceof check
+	    return Object.prototype.toString.call(obj) === '[object ' + type + ']'
+	  }
+
+	  // Transform image coordinates, allows to override e.g.
+	  // the canvas orientation based on the orientation option,
+	  // gets canvas, options passed as arguments:
+	  loadImage.transformCoordinates = function () {
+	    console.log('NO transform coordinates');
+	    return
+	  }
+
+	  // Returns transformed options, allows to override e.g.
+	  // maxWidth, maxHeight and crop options based on the aspectRatio.
+	  // gets img, options passed as arguments:
+	  loadImage.getTransformedOptions = function (img, options) {
+	    var aspectRatio = options.aspectRatio
+	    var newOptions
+	    var i
+	    var width
+	    var height
+	    if (!aspectRatio) {
+	      return options
+	    }
+	    newOptions = {}
+	    for (i in options) {
+	      if (options.hasOwnProperty(i)) {
+	        newOptions[i] = options[i]
+	      }
+	    }
+	    newOptions.crop = true
+	    width = img.naturalWidth || img.width
+	    height = img.naturalHeight || img.height
+	    if (width / height > aspectRatio) {
+	      newOptions.maxWidth = height * aspectRatio
+	      newOptions.maxHeight = height
+	    } else {
+	      newOptions.maxWidth = width
+	      newOptions.maxHeight = width / aspectRatio
+	    }
+	    return newOptions
+	  }
+
+	  // Canvas render method, allows to implement a different rendering algorithm:
+	  loadImage.renderImageToCanvas = function (
+	    canvas,
+	    img,
+	    sourceX,
+	    sourceY,
+	    sourceWidth,
+	    sourceHeight,
+	    destX,
+	    destY,
+	    destWidth,
+	    destHeight
+	  ) {
+	    canvas.getContext('2d').drawImage(
+	      img,
+	      sourceX,
+	      sourceY,
+	      sourceWidth,
+	      sourceHeight,
+	      destX,
+	      destY,
+	      destWidth,
+	      destHeight
+	    )
+	    return canvas
+	  }
+
+	  // This method is used to determine if the target image
+	  // should be a canvas element:
+	  loadImage.hasCanvasOption = function (options) {
+	    return options.canvas || options.crop || !!options.aspectRatio
+	  }
+
+	  // Scales and/or crops the given image (img or canvas HTML element)
+	  // using the given options.
+	  // Returns a canvas object if the browser supports canvas
+	  // and the hasCanvasOption method returns true or a canvas
+	  // object is passed as image, else the scaled image:
+	  loadImage.scale = function (img, options) {
+	    options = options || {}
+	    var canvas = document.createElement('canvas')
+	    var useCanvas = img.getContext ||
+	                    (loadImage.hasCanvasOption(options) && canvas.getContext)
+	    var width = img.naturalWidth || img.width
+	    var height = img.naturalHeight || img.height
+	    var destWidth = width
+	    var destHeight = height
+	    var maxWidth
+	    var maxHeight
+	    var minWidth
+	    var minHeight
+	    var sourceWidth
+	    var sourceHeight
+	    var sourceX
+	    var sourceY
+	    var pixelRatio
+	    var downsamplingRatio
+	    var tmp
+	    function scaleUp () {
+	      var scale = Math.max(
+	        (minWidth || destWidth) / destWidth,
+	        (minHeight || destHeight) / destHeight
+	      )
+	      if (scale > 1) {
+	        destWidth *= scale
+	        destHeight *= scale
+	      }
+	    }
+	    function scaleDown () {
+	      var scale = Math.min(
+	        (maxWidth || destWidth) / destWidth,
+	        (maxHeight || destHeight) / destHeight
+	      )
+	      if (scale < 1) {
+	        destWidth *= scale
+	        destHeight *= scale
+	      }
+	    }
+	    if (useCanvas) {
+	      options = loadImage.getTransformedOptions(img, options)
+	      sourceX = options.left || 0
+	      sourceY = options.top || 0
+	      if (options.sourceWidth) {
+	        sourceWidth = options.sourceWidth
+	        if (options.right !== undefined && options.left === undefined) {
+	          sourceX = width - sourceWidth - options.right
+	        }
+	      } else {
+	        sourceWidth = width - sourceX - (options.right || 0)
+	      }
+	      if (options.sourceHeight) {
+	        sourceHeight = options.sourceHeight
+	        if (options.bottom !== undefined && options.top === undefined) {
+	          sourceY = height - sourceHeight - options.bottom
+	        }
+	      } else {
+	        sourceHeight = height - sourceY - (options.bottom || 0)
+	      }
+	      destWidth = sourceWidth
+	      destHeight = sourceHeight
+	    }
+	    maxWidth = options.maxWidth
+	    maxHeight = options.maxHeight
+	    minWidth = options.minWidth
+	    minHeight = options.minHeight
+	    if (useCanvas && maxWidth && maxHeight && options.crop) {
+	      destWidth = maxWidth
+	      destHeight = maxHeight
+	      tmp = sourceWidth / sourceHeight - maxWidth / maxHeight
+	      if (tmp < 0) {
+	        sourceHeight = maxHeight * sourceWidth / maxWidth
+	        if (options.top === undefined && options.bottom === undefined) {
+	          sourceY = (height - sourceHeight) / 2
+	        }
+	      } else if (tmp > 0) {
+	        sourceWidth = maxWidth * sourceHeight / maxHeight
+	        if (options.left === undefined && options.right === undefined) {
+	          sourceX = (width - sourceWidth) / 2
+	        }
+	      }
+	    } else {
+	      if (options.contain || options.cover) {
+	        minWidth = maxWidth = maxWidth || minWidth
+	        minHeight = maxHeight = maxHeight || minHeight
+	      }
+	      if (options.cover) {
+	        scaleDown()
+	        scaleUp()
+	      } else {
+	        scaleUp()
+	        scaleDown()
+	      }
+	    }
+	    if (useCanvas) {
+	      pixelRatio = options.pixelRatio
+	      if (pixelRatio > 1) {
+	        canvas.style.width = destWidth + 'px'
+	        canvas.style.height = destHeight + 'px'
+	        destWidth *= pixelRatio
+	        destHeight *= pixelRatio
+	        canvas.getContext('2d').scale(pixelRatio, pixelRatio)
+	      }
+	      downsamplingRatio = options.downsamplingRatio
+	      if (downsamplingRatio > 0 && downsamplingRatio < 1 &&
+	            destWidth < sourceWidth && destHeight < sourceHeight) {
+	        while (sourceWidth * downsamplingRatio > destWidth) {
+	          canvas.width = sourceWidth * downsamplingRatio
+	          canvas.height = sourceHeight * downsamplingRatio
+	          loadImage.renderImageToCanvas(
+	            canvas,
+	            img,
+	            sourceX,
+	            sourceY,
+	            sourceWidth,
+	            sourceHeight,
+	            0,
+	            0,
+	            canvas.width,
+	            canvas.height
+	          )
+	          sourceWidth = canvas.width
+	          sourceHeight = canvas.height
+	          img = document.createElement('canvas')
+	          img.width = sourceWidth
+	          img.height = sourceHeight
+	          loadImage.renderImageToCanvas(
+	            img,
+	            canvas,
+	            0,
+	            0,
+	            sourceWidth,
+	            sourceHeight,
+	            0,
+	            0,
+	            sourceWidth,
+	            sourceHeight
+	          )
+	        }
+	      }
+	      canvas.width = destWidth
+	      canvas.height = destHeight
+	      loadImage.transformCoordinates(
+	        canvas,
+	        options
+	      )
+	      return loadImage.renderImageToCanvas(
+	        canvas,
+	        img,
+	        sourceX,
+	        sourceY,
+	        sourceWidth,
+	        sourceHeight,
+	        0,
+	        0,
+	        destWidth,
+	        destHeight
+	      )
+	    }
+	    img.width = destWidth
+	    img.height = destHeight
+	    return img
+	  }
+
+	  loadImage.createObjectURL = function (file) {
+	    return urlAPI ? urlAPI.createObjectURL(file) : false
+	  }
+
+	  loadImage.revokeObjectURL = function (url) {
+	    return urlAPI ? urlAPI.revokeObjectURL(url) : false
+	  }
+
+	  // Loads a given File object via FileReader interface,
+	  // invokes the callback with the event object (load or error).
+	  // The result can be read via event.target.result:
+	  loadImage.readFile = function (file, callback, method) {
+	    if (window.FileReader) {
+	      var fileReader = new FileReader()
+	      fileReader.onload = fileReader.onerror = callback
+	      method = method || 'readAsDataURL'
+	      if (fileReader[method]) {
+	        fileReader[method](file)
+	        return fileReader
+	      }
+	    }
+	    return false
+	  }
+
+	  if (true) {
+	    !(__WEBPACK_AMD_DEFINE_RESULT__ = function () {
+	      return loadImage
+	    }.call(exports, __webpack_require__, exports, module), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__))
+	  } else if (typeof module === 'object' && module.exports) {
+	    module.exports = loadImage
+	  } else {
+	    $.loadImage = loadImage
+	  }
+	}(window))
+
+
+/***/ },
 /* 22 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -3129,8 +3216,8 @@ module.exports =
 	var EventPluginUtils = __webpack_require__(39);
 	var ReactErrorUtils = __webpack_require__(44);
 
-	var accumulateInto = __webpack_require__(83);
-	var forEachAccumulated = __webpack_require__(85);
+	var accumulateInto = __webpack_require__(84);
+	var forEachAccumulated = __webpack_require__(86);
 	var invariant = __webpack_require__(3);
 
 	/**
@@ -3382,8 +3469,8 @@ module.exports =
 	var EventPluginHub = __webpack_require__(23);
 	var EventPluginUtils = __webpack_require__(39);
 
-	var accumulateInto = __webpack_require__(83);
-	var forEachAccumulated = __webpack_require__(85);
+	var accumulateInto = __webpack_require__(84);
+	var forEachAccumulated = __webpack_require__(86);
 	var warning = __webpack_require__(2);
 
 	var PropagationPhases = EventConstants.PropagationPhases;
@@ -4242,10 +4329,10 @@ module.exports =
 
 	var EventConstants = __webpack_require__(13);
 	var EventPluginRegistry = __webpack_require__(30);
-	var ReactEventEmitterMixin = __webpack_require__(141);
-	var ViewportMetrics = __webpack_require__(82);
+	var ReactEventEmitterMixin = __webpack_require__(144);
+	var ViewportMetrics = __webpack_require__(83);
 
-	var getVendorPrefixedEventName = __webpack_require__(173);
+	var getVendorPrefixedEventName = __webpack_require__(176);
 	var isEventSupported = __webpack_require__(55);
 
 	/**
@@ -4588,7 +4675,7 @@ module.exports =
 	'use strict';
 
 	var SyntheticUIEvent = __webpack_require__(26);
-	var ViewportMetrics = __webpack_require__(82);
+	var ViewportMetrics = __webpack_require__(83);
 
 	var getEventModifierState = __webpack_require__(52);
 
@@ -4965,15 +5052,15 @@ module.exports =
 
 	'use strict';
 
-	var DOMLazyTree = __webpack_require__(20);
-	var Danger = __webpack_require__(112);
-	var ReactMultiChildUpdateTypes = __webpack_require__(78);
+	var DOMLazyTree = __webpack_require__(19);
+	var Danger = __webpack_require__(115);
+	var ReactMultiChildUpdateTypes = __webpack_require__(79);
 	var ReactDOMComponentTree = __webpack_require__(6);
 	var ReactInstrumentation = __webpack_require__(8);
 
 	var createMicrosoftUnsafeLocalFunction = __webpack_require__(50);
 	var setInnerHTML = __webpack_require__(35);
-	var setTextContent = __webpack_require__(90);
+	var setTextContent = __webpack_require__(91);
 
 	function getNodeAfter(parentNode, node) {
 	  // Special case for text components, which return [open, close] comments
@@ -5491,7 +5578,7 @@ module.exports =
 
 	var _prodInvariant = __webpack_require__(4);
 
-	var ReactPropTypes = __webpack_require__(80);
+	var ReactPropTypes = __webpack_require__(81);
 	var ReactPropTypeLocations = __webpack_require__(32);
 	var ReactPropTypesSecret = __webpack_require__(47);
 
@@ -7184,11 +7271,313 @@ module.exports =
 /* 59 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;'use strict';
+	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*
+	 * JavaScript Load Image Exif Parser
+	 * https://github.com/blueimp/JavaScript-Load-Image
+	 *
+	 * Copyright 2013, Sebastian Tschan
+	 * https://blueimp.net
+	 *
+	 * Licensed under the MIT license:
+	 * http://www.opensource.org/licenses/MIT
+	 */
 
-	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+	/*global define, module, require, window, console */
 
-	/*
+	;(function (factory) {
+	  'use strict'
+	  if (true) {
+	    // Register as an anonymous AMD module:
+	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(21), __webpack_require__(60)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__))
+	  } else if (typeof module === 'object' && module.exports) {
+	    factory(require('./load-image'), require('./load-image-meta'))
+	  } else {
+	    // Browser globals:
+	    factory(window.loadImage)
+	  }
+	}(function (loadImage) {
+	  'use strict'
+
+	  loadImage.ExifMap = function () {
+	    return this
+	  }
+
+	  loadImage.ExifMap.prototype.map = {
+	    'Orientation': 0x0112
+	  }
+
+	  loadImage.ExifMap.prototype.get = function (id) {
+	    return this[id] || this[this.map[id]]
+	  }
+
+	  loadImage.getExifThumbnail = function (dataView, offset, length) {
+	    var hexData,
+	      i,
+	      b
+	    if (!length || offset + length > dataView.byteLength) {
+	      console.log('Invalid Exif data: Invalid thumbnail data.')
+	      return
+	    }
+	    hexData = []
+	    for (i = 0; i < length; i += 1) {
+	      b = dataView.getUint8(offset + i)
+	      hexData.push((b < 16 ? '0' : '') + b.toString(16))
+	    }
+	    return 'data:image/jpeg,%' + hexData.join('%')
+	  }
+
+	  loadImage.exifTagTypes = {
+	    // byte, 8-bit unsigned int:
+	    1: {
+	      getValue: function (dataView, dataOffset) {
+	        return dataView.getUint8(dataOffset)
+	      },
+	      size: 1
+	    },
+	    // ascii, 8-bit byte:
+	    2: {
+	      getValue: function (dataView, dataOffset) {
+	        return String.fromCharCode(dataView.getUint8(dataOffset))
+	      },
+	      size: 1,
+	      ascii: true
+	    },
+	    // short, 16 bit int:
+	    3: {
+	      getValue: function (dataView, dataOffset, littleEndian) {
+	        return dataView.getUint16(dataOffset, littleEndian)
+	      },
+	      size: 2
+	    },
+	    // long, 32 bit int:
+	    4: {
+	      getValue: function (dataView, dataOffset, littleEndian) {
+	        return dataView.getUint32(dataOffset, littleEndian)
+	      },
+	      size: 4
+	    },
+	    // rational = two long values, first is numerator, second is denominator:
+	    5: {
+	      getValue: function (dataView, dataOffset, littleEndian) {
+	        return dataView.getUint32(dataOffset, littleEndian) /
+	        dataView.getUint32(dataOffset + 4, littleEndian)
+	      },
+	      size: 8
+	    },
+	    // slong, 32 bit signed int:
+	    9: {
+	      getValue: function (dataView, dataOffset, littleEndian) {
+	        return dataView.getInt32(dataOffset, littleEndian)
+	      },
+	      size: 4
+	    },
+	    // srational, two slongs, first is numerator, second is denominator:
+	    10: {
+	      getValue: function (dataView, dataOffset, littleEndian) {
+	        return dataView.getInt32(dataOffset, littleEndian) /
+	        dataView.getInt32(dataOffset + 4, littleEndian)
+	      },
+	      size: 8
+	    }
+	  }
+	  // undefined, 8-bit byte, value depending on field:
+	  loadImage.exifTagTypes[7] = loadImage.exifTagTypes[1]
+
+	  loadImage.getExifValue = function (dataView, tiffOffset, offset, type, length, littleEndian) {
+	    var tagType = loadImage.exifTagTypes[type]
+	    var tagSize
+	    var dataOffset
+	    var values
+	    var i
+	    var str
+	    var c
+	    if (!tagType) {
+	      console.log('Invalid Exif data: Invalid tag type.')
+	      return
+	    }
+	    tagSize = tagType.size * length
+	    // Determine if the value is contained in the dataOffset bytes,
+	    // or if the value at the dataOffset is a pointer to the actual data:
+	    dataOffset = tagSize > 4
+	      ? tiffOffset + dataView.getUint32(offset + 8, littleEndian)
+	      : (offset + 8)
+	    if (dataOffset + tagSize > dataView.byteLength) {
+	      console.log('Invalid Exif data: Invalid data offset.')
+	      return
+	    }
+	    if (length === 1) {
+	      return tagType.getValue(dataView, dataOffset, littleEndian)
+	    }
+	    values = []
+	    for (i = 0; i < length; i += 1) {
+	      values[i] = tagType.getValue(dataView, dataOffset + i * tagType.size, littleEndian)
+	    }
+	    if (tagType.ascii) {
+	      str = ''
+	      // Concatenate the chars:
+	      for (i = 0; i < values.length; i += 1) {
+	        c = values[i]
+	        // Ignore the terminating NULL byte(s):
+	        if (c === '\u0000') {
+	          break
+	        }
+	        str += c
+	      }
+	      return str
+	    }
+	    return values
+	  }
+
+	  loadImage.parseExifTag = function (dataView, tiffOffset, offset, littleEndian, data) {
+	    var tag = dataView.getUint16(offset, littleEndian)
+	    data.exif[tag] = loadImage.getExifValue(
+	      dataView,
+	      tiffOffset,
+	      offset,
+	      dataView.getUint16(offset + 2, littleEndian), // tag type
+	      dataView.getUint32(offset + 4, littleEndian), // tag length
+	      littleEndian
+	    )
+	  }
+
+	  loadImage.parseExifTags = function (dataView, tiffOffset, dirOffset, littleEndian, data) {
+	    var tagsNumber,
+	      dirEndOffset,
+	      i
+	    if (dirOffset + 6 > dataView.byteLength) {
+	      console.log('Invalid Exif data: Invalid directory offset.')
+	      return
+	    }
+	    tagsNumber = dataView.getUint16(dirOffset, littleEndian)
+	    dirEndOffset = dirOffset + 2 + 12 * tagsNumber
+	    if (dirEndOffset + 4 > dataView.byteLength) {
+	      console.log('Invalid Exif data: Invalid directory size.')
+	      return
+	    }
+	    for (i = 0; i < tagsNumber; i += 1) {
+	      this.parseExifTag(
+	        dataView,
+	        tiffOffset,
+	        dirOffset + 2 + 12 * i, // tag offset
+	        littleEndian,
+	        data
+	      )
+	    }
+	    // Return the offset to the next directory:
+	    return dataView.getUint32(dirEndOffset, littleEndian)
+	  }
+
+	  loadImage.parseExifData = function (dataView, offset, length, data, options) {
+	    if (options.disableExif) {
+	      return
+	    }
+	    var tiffOffset = offset + 10
+	    var littleEndian
+	    var dirOffset
+	    var thumbnailData
+	    // Check for the ASCII code for "Exif" (0x45786966):
+	    if (dataView.getUint32(offset + 4) !== 0x45786966) {
+	      // No Exif data, might be XMP data instead
+	      return
+	    }
+	    if (tiffOffset + 8 > dataView.byteLength) {
+	      console.log('Invalid Exif data: Invalid segment size.')
+	      return
+	    }
+	    // Check for the two null bytes:
+	    if (dataView.getUint16(offset + 8) !== 0x0000) {
+	      console.log('Invalid Exif data: Missing byte alignment offset.')
+	      return
+	    }
+	    // Check the byte alignment:
+	    switch (dataView.getUint16(tiffOffset)) {
+	      case 0x4949:
+	        littleEndian = true
+	        break
+	      case 0x4D4D:
+	        littleEndian = false
+	        break
+	      default:
+	        console.log('Invalid Exif data: Invalid byte alignment marker.')
+	        return
+	    }
+	    // Check for the TIFF tag marker (0x002A):
+	    if (dataView.getUint16(tiffOffset + 2, littleEndian) !== 0x002A) {
+	      console.log('Invalid Exif data: Missing TIFF marker.')
+	      return
+	    }
+	    // Retrieve the directory offset bytes, usually 0x00000008 or 8 decimal:
+	    dirOffset = dataView.getUint32(tiffOffset + 4, littleEndian)
+	    // Create the exif object to store the tags:
+	    data.exif = new loadImage.ExifMap()
+	    // Parse the tags of the main image directory and retrieve the
+	    // offset to the next directory, usually the thumbnail directory:
+	    dirOffset = loadImage.parseExifTags(
+	      dataView,
+	      tiffOffset,
+	      tiffOffset + dirOffset,
+	      littleEndian,
+	      data
+	    )
+	    if (dirOffset && !options.disableExifThumbnail) {
+	      thumbnailData = {exif: {}}
+	      dirOffset = loadImage.parseExifTags(
+	        dataView,
+	        tiffOffset,
+	        tiffOffset + dirOffset,
+	        littleEndian,
+	        thumbnailData
+	      )
+	      // Check for JPEG Thumbnail offset:
+	      if (thumbnailData.exif[0x0201]) {
+	        data.exif.Thumbnail = loadImage.getExifThumbnail(
+	          dataView,
+	          tiffOffset + thumbnailData.exif[0x0201],
+	          thumbnailData.exif[0x0202] // Thumbnail data length
+	        )
+	      }
+	    }
+	    // Check for Exif Sub IFD Pointer:
+	    if (data.exif[0x8769] && !options.disableExifSub) {
+	      loadImage.parseExifTags(
+	        dataView,
+	        tiffOffset,
+	        tiffOffset + data.exif[0x8769], // directory offset
+	        littleEndian,
+	        data
+	      )
+	    }
+	    // Check for GPS Info IFD Pointer:
+	    if (data.exif[0x8825] && !options.disableExifGps) {
+	      loadImage.parseExifTags(
+	        dataView,
+	        tiffOffset,
+	        tiffOffset + data.exif[0x8825], // directory offset
+	        littleEndian,
+	        data
+	      )
+	    }
+	  }
+
+	  // Registers the Exif parser for the APP1 JPEG meta data segment:
+	  loadImage.metaDataParsers.jpeg[0xffe1].push(loadImage.parseExifData)
+
+	  // Adds the following properties to the parseMetaData callback data:
+	  // * exif: The exif tags, parsed by the parseExifData method
+
+	  // Adds the following options to the parseMetaData method:
+	  // * disableExif: Disables Exif parsing.
+	  // * disableExifThumbnail: Disables parsing of the Exif Thumbnail.
+	  // * disableExifSub: Disables parsing of the Exif Sub IFD.
+	  // * disableExifGps: Disables parsing of the Exif GPS Info IFD.
+	}))
+
+
+/***/ },
+/* 60 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*
 	 * JavaScript Load Image Meta
 	 * https://github.com/blueimp/JavaScript-Load-Image
 	 *
@@ -7206,32 +7595,32 @@ module.exports =
 	/*global define, module, require, window, DataView, Blob, Uint8Array, console */
 
 	;(function (factory) {
-	  'use strict';
-
+	  'use strict'
 	  if (true) {
 	    // Register as an anonymous AMD module:
-	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(18)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-	  } else if ((typeof module === 'undefined' ? 'undefined' : _typeof(module)) === 'object' && module.exports) {
-	    factory(require('./load-image'));
+	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(21)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__))
+	  } else if (typeof module === 'object' && module.exports) {
+	    factory(require('./load-image'))
 	  } else {
 	    // Browser globals:
-	    factory(window.loadImage);
+	    factory(window.loadImage)
 	  }
-	})(function (loadImage) {
-	  'use strict';
+	}(function (loadImage) {
+	  'use strict'
 
-	  var hasblobSlice = window.Blob && (Blob.prototype.slice || Blob.prototype.webkitSlice || Blob.prototype.mozSlice);
+	  var hasblobSlice = window.Blob && (Blob.prototype.slice ||
+	  Blob.prototype.webkitSlice || Blob.prototype.mozSlice)
 
 	  loadImage.blobSlice = hasblobSlice && function () {
-	    var slice = this.slice || this.webkitSlice || this.mozSlice;
-	    return slice.apply(this, arguments);
-	  };
+	    var slice = this.slice || this.webkitSlice || this.mozSlice
+	    return slice.apply(this, arguments)
+	  }
 
 	  loadImage.metaDataParsers = {
 	    jpeg: {
 	      0xffe1: [] // APP1 marker
 	    }
-	  };
+	  }
 
 	  // Parses image meta data and calls the callback with an object argument
 	  // with the following properties:
@@ -7240,86 +7629,101 @@ module.exports =
 	  // * maxMetaDataSize: Defines the maximum number of bytes to parse.
 	  // * disableImageHead: Disables creating the imageHead property.
 	  loadImage.parseMetaData = function (file, callback, options) {
-	    options = options || {};
-	    var that = this;
+	    options = options || {}
+	    var that = this
 	    // 256 KiB should contain all EXIF/ICC/IPTC segments:
-	    var maxMetaDataSize = options.maxMetaDataSize || 262144;
-	    var data = {};
-	    var noMetaData = !(window.DataView && file && file.size >= 12 && file.type === 'image/jpeg' && loadImage.blobSlice);
-	    if (noMetaData || !loadImage.readFile(loadImage.blobSlice.call(file, 0, maxMetaDataSize), function (e) {
-	      if (e.target.error) {
-	        // FileReader error
-	        console.log(e.target.error);
-	        callback(data);
-	        return;
-	      }
-	      // Note on endianness:
-	      // Since the marker and length bytes in JPEG files are always
-	      // stored in big endian order, we can leave the endian parameter
-	      // of the DataView methods undefined, defaulting to big endian.
-	      var buffer = e.target.result;
-	      var dataView = new DataView(buffer);
-	      var offset = 2;
-	      var maxOffset = dataView.byteLength - 4;
-	      var headLength = offset;
-	      var markerBytes;
-	      var markerLength;
-	      var parsers;
-	      var i;
-	      // Check for the JPEG marker (0xffd8):
-	      if (dataView.getUint16(0) === 0xffd8) {
-	        while (offset < maxOffset) {
-	          markerBytes = dataView.getUint16(offset);
-	          // Search for APPn (0xffeN) and COM (0xfffe) markers,
-	          // which contain application-specific meta-data like
-	          // Exif, ICC and IPTC data and text comments:
-	          if (markerBytes >= 0xffe0 && markerBytes <= 0xffef || markerBytes === 0xfffe) {
-	            // The marker bytes (2) are always followed by
-	            // the length bytes (2), indicating the length of the
-	            // marker segment, which includes the length bytes,
-	            // but not the marker bytes, so we add 2:
-	            markerLength = dataView.getUint16(offset + 2) + 2;
-	            if (offset + markerLength > dataView.byteLength) {
-	              console.log('Invalid meta data: Invalid segment size.');
-	              break;
-	            }
-	            parsers = loadImage.metaDataParsers.jpeg[markerBytes];
-	            if (parsers) {
-	              for (i = 0; i < parsers.length; i += 1) {
-	                parsers[i].call(that, dataView, offset, markerLength, data, options);
+	    var maxMetaDataSize = options.maxMetaDataSize || 262144
+	    var data = {}
+	    var noMetaData = !(window.DataView && file && file.size >= 12 &&
+	                      file.type === 'image/jpeg' && loadImage.blobSlice)
+	    if (noMetaData || !loadImage.readFile(
+	        loadImage.blobSlice.call(file, 0, maxMetaDataSize),
+	        function (e) {
+	          if (e.target.error) {
+	            // FileReader error
+	            console.log(e.target.error)
+	            callback(data)
+	            return
+	          }
+	          // Note on endianness:
+	          // Since the marker and length bytes in JPEG files are always
+	          // stored in big endian order, we can leave the endian parameter
+	          // of the DataView methods undefined, defaulting to big endian.
+	          var buffer = e.target.result
+	          var dataView = new DataView(buffer)
+	          var offset = 2
+	          var maxOffset = dataView.byteLength - 4
+	          var headLength = offset
+	          var markerBytes
+	          var markerLength
+	          var parsers
+	          var i
+	          // Check for the JPEG marker (0xffd8):
+	          if (dataView.getUint16(0) === 0xffd8) {
+	            while (offset < maxOffset) {
+	              markerBytes = dataView.getUint16(offset)
+	              // Search for APPn (0xffeN) and COM (0xfffe) markers,
+	              // which contain application-specific meta-data like
+	              // Exif, ICC and IPTC data and text comments:
+	              if ((markerBytes >= 0xffe0 && markerBytes <= 0xffef) ||
+	                markerBytes === 0xfffe) {
+	                // The marker bytes (2) are always followed by
+	                // the length bytes (2), indicating the length of the
+	                // marker segment, which includes the length bytes,
+	                // but not the marker bytes, so we add 2:
+	                markerLength = dataView.getUint16(offset + 2) + 2
+	                if (offset + markerLength > dataView.byteLength) {
+	                  console.log('Invalid meta data: Invalid segment size.')
+	                  break
+	                }
+	                parsers = loadImage.metaDataParsers.jpeg[markerBytes]
+	                if (parsers) {
+	                  for (i = 0; i < parsers.length; i += 1) {
+	                    parsers[i].call(
+	                      that,
+	                      dataView,
+	                      offset,
+	                      markerLength,
+	                      data,
+	                      options
+	                    )
+	                  }
+	                }
+	                offset += markerLength
+	                headLength = offset
+	              } else {
+	                // Not an APPn or COM marker, probably safe to
+	                // assume that this is the end of the meta data
+	                break
 	              }
 	            }
-	            offset += markerLength;
-	            headLength = offset;
+	            // Meta length must be longer than JPEG marker (2)
+	            // plus APPn marker (2), followed by length bytes (2):
+	            if (!options.disableImageHead && headLength > 6) {
+	              if (buffer.slice) {
+	                data.imageHead = buffer.slice(0, headLength)
+	              } else {
+	                // Workaround for IE10, which does not yet
+	                // support ArrayBuffer.slice:
+	                data.imageHead = new Uint8Array(buffer)
+	                  .subarray(0, headLength)
+	              }
+	            }
 	          } else {
-	            // Not an APPn or COM marker, probably safe to
-	            // assume that this is the end of the meta data
-	            break;
+	            console.log('Invalid JPEG file: Missing JPEG marker.')
 	          }
-	        }
-	        // Meta length must be longer than JPEG marker (2)
-	        // plus APPn marker (2), followed by length bytes (2):
-	        if (!options.disableImageHead && headLength > 6) {
-	          if (buffer.slice) {
-	            data.imageHead = buffer.slice(0, headLength);
-	          } else {
-	            // Workaround for IE10, which does not yet
-	            // support ArrayBuffer.slice:
-	            data.imageHead = new Uint8Array(buffer).subarray(0, headLength);
-	          }
-	        }
-	      } else {
-	        console.log('Invalid JPEG file: Missing JPEG marker.');
-	      }
-	      callback(data);
-	    }, 'readAsArrayBuffer')) {
-	      callback(data);
+	          callback(data)
+	        },
+	        'readAsArrayBuffer'
+	      )) {
+	      callback(data)
 	    }
-	  };
-	});
+	  }
+	}))
+
 
 /***/ },
-/* 60 */
+/* 61 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
@@ -7408,7 +7812,7 @@ module.exports =
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
 
 /***/ },
-/* 61 */
+/* 62 */
 /***/ function(module, exports) {
 
 	/**
@@ -7439,7 +7843,7 @@ module.exports =
 	module.exports = focusNode;
 
 /***/ },
-/* 62 */
+/* 63 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -7478,7 +7882,7 @@ module.exports =
 	module.exports = getActiveElement;
 
 /***/ },
-/* 63 */
+/* 64 */
 /***/ function(module, exports) {
 
 	/**
@@ -7631,7 +8035,7 @@ module.exports =
 	module.exports = CSSProperty;
 
 /***/ },
-/* 64 */
+/* 65 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -7743,7 +8147,7 @@ module.exports =
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
 
 /***/ },
-/* 65 */
+/* 66 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -7759,12 +8163,12 @@ module.exports =
 
 	'use strict';
 
-	var DOMProperty = __webpack_require__(19);
+	var DOMProperty = __webpack_require__(18);
 	var ReactDOMComponentTree = __webpack_require__(6);
-	var ReactDOMInstrumentation = __webpack_require__(131);
+	var ReactDOMInstrumentation = __webpack_require__(134);
 	var ReactInstrumentation = __webpack_require__(8);
 
-	var quoteAttributeValueForBrowser = __webpack_require__(175);
+	var quoteAttributeValueForBrowser = __webpack_require__(178);
 	var warning = __webpack_require__(2);
 
 	var VALID_ATTRIBUTE_NAME_REGEX = new RegExp('^[' + DOMProperty.ATTRIBUTE_NAME_START_CHAR + '][' + DOMProperty.ATTRIBUTE_NAME_CHAR + ']*$');
@@ -7977,7 +8381,7 @@ module.exports =
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
 
 /***/ },
-/* 66 */
+/* 67 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -8173,7 +8577,7 @@ module.exports =
 	module.exports = ReactChildren;
 
 /***/ },
-/* 67 */
+/* 68 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -8911,7 +9315,7 @@ module.exports =
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
 
 /***/ },
-/* 68 */
+/* 69 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -8928,7 +9332,7 @@ module.exports =
 	'use strict';
 
 	var DOMChildrenOperations = __webpack_require__(37);
-	var ReactDOMIDOperations = __webpack_require__(129);
+	var ReactDOMIDOperations = __webpack_require__(132);
 
 	/**
 	 * Abstracts away all functionality of the reconciler that requires knowledge of
@@ -8955,7 +9359,7 @@ module.exports =
 	module.exports = ReactComponentBrowserEnvironment;
 
 /***/ },
-/* 69 */
+/* 70 */
 /***/ function(module, exports) {
 
 	/**
@@ -8978,7 +9382,7 @@ module.exports =
 	module.exports = ReactDOMComponentFlags;
 
 /***/ },
-/* 70 */
+/* 71 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -9184,7 +9588,7 @@ module.exports =
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
 
 /***/ },
-/* 71 */
+/* 72 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -9200,13 +9604,13 @@ module.exports =
 
 	'use strict';
 
-	var ReactInvalidSetStateWarningDevTool = __webpack_require__(145);
-	var ReactHostOperationHistoryDevtool = __webpack_require__(143);
+	var ReactInvalidSetStateWarningDevTool = __webpack_require__(148);
+	var ReactHostOperationHistoryDevtool = __webpack_require__(146);
 	var ReactComponentTreeDevtool = __webpack_require__(10);
-	var ReactChildrenMutationWarningDevtool = __webpack_require__(119);
+	var ReactChildrenMutationWarningDevtool = __webpack_require__(122);
 	var ExecutionEnvironment = __webpack_require__(7);
 
-	var performanceNow = __webpack_require__(106);
+	var performanceNow = __webpack_require__(109);
 	var warning = __webpack_require__(2);
 
 	var eventHandlers = [];
@@ -9511,7 +9915,7 @@ module.exports =
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
 
 /***/ },
-/* 72 */
+/* 73 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -9539,7 +9943,7 @@ module.exports =
 	var ReactElement = __webpack_require__(11);
 	var ReactPropTypeLocations = __webpack_require__(32);
 
-	var checkReactTypeSpec = __webpack_require__(84);
+	var checkReactTypeSpec = __webpack_require__(85);
 
 	var canDefineProperty = __webpack_require__(49);
 	var getIteratorFn = __webpack_require__(54);
@@ -9743,7 +10147,7 @@ module.exports =
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
 
 /***/ },
-/* 73 */
+/* 74 */
 /***/ function(module, exports) {
 
 	/**
@@ -9778,7 +10182,7 @@ module.exports =
 	module.exports = ReactEmptyComponent;
 
 /***/ },
-/* 74 */
+/* 75 */
 /***/ function(module, exports) {
 
 	/**
@@ -9805,7 +10209,7 @@ module.exports =
 	module.exports = ReactFeatureFlags;
 
 /***/ },
-/* 75 */
+/* 76 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -9887,7 +10291,7 @@ module.exports =
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
 
 /***/ },
-/* 76 */
+/* 77 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -9903,11 +10307,11 @@ module.exports =
 
 	'use strict';
 
-	var ReactDOMSelection = __webpack_require__(134);
+	var ReactDOMSelection = __webpack_require__(137);
 
-	var containsNode = __webpack_require__(94);
-	var focusNode = __webpack_require__(61);
-	var getActiveElement = __webpack_require__(62);
+	var containsNode = __webpack_require__(97);
+	var focusNode = __webpack_require__(62);
+	var getActiveElement = __webpack_require__(63);
 
 	function isInDocument(node) {
 	  return containsNode(document.documentElement, node);
@@ -10016,7 +10420,7 @@ module.exports =
 	module.exports = ReactInputSelection;
 
 /***/ },
-/* 77 */
+/* 78 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -10034,24 +10438,24 @@ module.exports =
 
 	var _prodInvariant = __webpack_require__(4);
 
-	var DOMLazyTree = __webpack_require__(20);
-	var DOMProperty = __webpack_require__(19);
+	var DOMLazyTree = __webpack_require__(19);
+	var DOMProperty = __webpack_require__(18);
 	var ReactBrowserEventEmitter = __webpack_require__(31);
 	var ReactCurrentOwner = __webpack_require__(14);
 	var ReactDOMComponentTree = __webpack_require__(6);
-	var ReactDOMContainerInfo = __webpack_require__(124);
-	var ReactDOMFeatureFlags = __webpack_require__(128);
+	var ReactDOMContainerInfo = __webpack_require__(127);
+	var ReactDOMFeatureFlags = __webpack_require__(131);
 	var ReactElement = __webpack_require__(11);
-	var ReactFeatureFlags = __webpack_require__(74);
+	var ReactFeatureFlags = __webpack_require__(75);
 	var ReactInstanceMap = __webpack_require__(25);
 	var ReactInstrumentation = __webpack_require__(8);
-	var ReactMarkupChecksum = __webpack_require__(146);
-	var ReactReconciler = __webpack_require__(21);
+	var ReactMarkupChecksum = __webpack_require__(149);
+	var ReactReconciler = __webpack_require__(20);
 	var ReactUpdateQueue = __webpack_require__(48);
 	var ReactUpdates = __webpack_require__(12);
 
 	var emptyObject = __webpack_require__(22);
-	var instantiateReactComponent = __webpack_require__(88);
+	var instantiateReactComponent = __webpack_require__(89);
 	var invariant = __webpack_require__(3);
 	var setInnerHTML = __webpack_require__(35);
 	var shouldUpdateReactComponent = __webpack_require__(56);
@@ -10521,7 +10925,7 @@ module.exports =
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
 
 /***/ },
-/* 78 */
+/* 79 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -10558,7 +10962,7 @@ module.exports =
 	module.exports = ReactMultiChildUpdateTypes;
 
 /***/ },
-/* 79 */
+/* 80 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -10604,7 +11008,7 @@ module.exports =
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
 
 /***/ },
-/* 80 */
+/* 81 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -11027,7 +11431,7 @@ module.exports =
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
 
 /***/ },
-/* 81 */
+/* 82 */
 /***/ function(module, exports) {
 
 	/**
@@ -11046,7 +11450,7 @@ module.exports =
 	module.exports = '15.3.0';
 
 /***/ },
-/* 82 */
+/* 83 */
 /***/ function(module, exports) {
 
 	/**
@@ -11078,7 +11482,7 @@ module.exports =
 	module.exports = ViewportMetrics;
 
 /***/ },
-/* 83 */
+/* 84 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -11142,7 +11546,7 @@ module.exports =
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
 
 /***/ },
-/* 84 */
+/* 85 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -11235,7 +11639,7 @@ module.exports =
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
 
 /***/ },
-/* 85 */
+/* 86 */
 /***/ function(module, exports) {
 
 	/**
@@ -11271,7 +11675,7 @@ module.exports =
 	module.exports = forEachAccumulated;
 
 /***/ },
-/* 86 */
+/* 87 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -11287,7 +11691,7 @@ module.exports =
 
 	'use strict';
 
-	var ReactNodeTypes = __webpack_require__(79);
+	var ReactNodeTypes = __webpack_require__(80);
 
 	function getHostComponentFromComposite(inst) {
 	  var type;
@@ -11306,7 +11710,7 @@ module.exports =
 	module.exports = getHostComponentFromComposite;
 
 /***/ },
-/* 87 */
+/* 88 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -11344,7 +11748,7 @@ module.exports =
 	module.exports = getTextContentAccessor;
 
 /***/ },
-/* 88 */
+/* 89 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -11363,9 +11767,9 @@ module.exports =
 	var _prodInvariant = __webpack_require__(4),
 	    _assign = __webpack_require__(5);
 
-	var ReactCompositeComponent = __webpack_require__(120);
-	var ReactEmptyComponent = __webpack_require__(73);
-	var ReactHostComponent = __webpack_require__(75);
+	var ReactCompositeComponent = __webpack_require__(123);
+	var ReactEmptyComponent = __webpack_require__(74);
+	var ReactHostComponent = __webpack_require__(76);
 	var ReactInstrumentation = __webpack_require__(8);
 
 	var invariant = __webpack_require__(3);
@@ -11496,7 +11900,7 @@ module.exports =
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
 
 /***/ },
-/* 89 */
+/* 90 */
 /***/ function(module, exports) {
 
 	/**
@@ -11552,7 +11956,7 @@ module.exports =
 	module.exports = isTextInputElement;
 
 /***/ },
-/* 90 */
+/* 91 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -11605,15 +12009,413 @@ module.exports =
 	module.exports = setTextContent;
 
 /***/ },
-/* 91 */
+/* 92 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;'use strict';
+	module.exports = __webpack_require__(21)
 
-	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+	__webpack_require__(59)
+	__webpack_require__(93)
+	__webpack_require__(60)
+	__webpack_require__(94)
 
-	/*
-	 * JavaScript Load Image Exif Parser
+
+/***/ },
+/* 93 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*
+	 * JavaScript Load Image Exif Map
+	 * https://github.com/blueimp/JavaScript-Load-Image
+	 *
+	 * Copyright 2013, Sebastian Tschan
+	 * https://blueimp.net
+	 *
+	 * Exif tags mapping based on
+	 * https://github.com/jseidelin/exif-js
+	 *
+	 * Licensed under the MIT license:
+	 * http://www.opensource.org/licenses/MIT
+	 */
+
+	/*global define, module, require, window */
+
+	;(function (factory) {
+	  'use strict'
+	  if (true) {
+	    // Register as an anonymous AMD module:
+	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(21), __webpack_require__(59)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__))
+	  } else if (typeof module === 'object' && module.exports) {
+	    factory(require('./load-image'), require('./load-image-exif'))
+	  } else {
+	    // Browser globals:
+	    factory(window.loadImage)
+	  }
+	}(function (loadImage) {
+	  'use strict'
+
+	  loadImage.ExifMap.prototype.tags = {
+	    // =================
+	    // TIFF tags (IFD0):
+	    // =================
+	    0x0100: 'ImageWidth',
+	    0x0101: 'ImageHeight',
+	    0x8769: 'ExifIFDPointer',
+	    0x8825: 'GPSInfoIFDPointer',
+	    0xA005: 'InteroperabilityIFDPointer',
+	    0x0102: 'BitsPerSample',
+	    0x0103: 'Compression',
+	    0x0106: 'PhotometricInterpretation',
+	    0x0112: 'Orientation',
+	    0x0115: 'SamplesPerPixel',
+	    0x011C: 'PlanarConfiguration',
+	    0x0212: 'YCbCrSubSampling',
+	    0x0213: 'YCbCrPositioning',
+	    0x011A: 'XResolution',
+	    0x011B: 'YResolution',
+	    0x0128: 'ResolutionUnit',
+	    0x0111: 'StripOffsets',
+	    0x0116: 'RowsPerStrip',
+	    0x0117: 'StripByteCounts',
+	    0x0201: 'JPEGInterchangeFormat',
+	    0x0202: 'JPEGInterchangeFormatLength',
+	    0x012D: 'TransferFunction',
+	    0x013E: 'WhitePoint',
+	    0x013F: 'PrimaryChromaticities',
+	    0x0211: 'YCbCrCoefficients',
+	    0x0214: 'ReferenceBlackWhite',
+	    0x0132: 'DateTime',
+	    0x010E: 'ImageDescription',
+	    0x010F: 'Make',
+	    0x0110: 'Model',
+	    0x0131: 'Software',
+	    0x013B: 'Artist',
+	    0x8298: 'Copyright',
+	    // ==================
+	    // Exif Sub IFD tags:
+	    // ==================
+	    0x9000: 'ExifVersion', // EXIF version
+	    0xA000: 'FlashpixVersion', // Flashpix format version
+	    0xA001: 'ColorSpace', // Color space information tag
+	    0xA002: 'PixelXDimension', // Valid width of meaningful image
+	    0xA003: 'PixelYDimension', // Valid height of meaningful image
+	    0xA500: 'Gamma',
+	    0x9101: 'ComponentsConfiguration', // Information about channels
+	    0x9102: 'CompressedBitsPerPixel', // Compressed bits per pixel
+	    0x927C: 'MakerNote', // Any desired information written by the manufacturer
+	    0x9286: 'UserComment', // Comments by user
+	    0xA004: 'RelatedSoundFile', // Name of related sound file
+	    0x9003: 'DateTimeOriginal', // Date and time when the original image was generated
+	    0x9004: 'DateTimeDigitized', // Date and time when the image was stored digitally
+	    0x9290: 'SubSecTime', // Fractions of seconds for DateTime
+	    0x9291: 'SubSecTimeOriginal', // Fractions of seconds for DateTimeOriginal
+	    0x9292: 'SubSecTimeDigitized', // Fractions of seconds for DateTimeDigitized
+	    0x829A: 'ExposureTime', // Exposure time (in seconds)
+	    0x829D: 'FNumber',
+	    0x8822: 'ExposureProgram', // Exposure program
+	    0x8824: 'SpectralSensitivity', // Spectral sensitivity
+	    0x8827: 'PhotographicSensitivity', // EXIF 2.3, ISOSpeedRatings in EXIF 2.2
+	    0x8828: 'OECF', // Optoelectric conversion factor
+	    0x8830: 'SensitivityType',
+	    0x8831: 'StandardOutputSensitivity',
+	    0x8832: 'RecommendedExposureIndex',
+	    0x8833: 'ISOSpeed',
+	    0x8834: 'ISOSpeedLatitudeyyy',
+	    0x8835: 'ISOSpeedLatitudezzz',
+	    0x9201: 'ShutterSpeedValue', // Shutter speed
+	    0x9202: 'ApertureValue', // Lens aperture
+	    0x9203: 'BrightnessValue', // Value of brightness
+	    0x9204: 'ExposureBias', // Exposure bias
+	    0x9205: 'MaxApertureValue', // Smallest F number of lens
+	    0x9206: 'SubjectDistance', // Distance to subject in meters
+	    0x9207: 'MeteringMode', // Metering mode
+	    0x9208: 'LightSource', // Kind of light source
+	    0x9209: 'Flash', // Flash status
+	    0x9214: 'SubjectArea', // Location and area of main subject
+	    0x920A: 'FocalLength', // Focal length of the lens in mm
+	    0xA20B: 'FlashEnergy', // Strobe energy in BCPS
+	    0xA20C: 'SpatialFrequencyResponse',
+	    0xA20E: 'FocalPlaneXResolution', // Number of pixels in width direction per FPRUnit
+	    0xA20F: 'FocalPlaneYResolution', // Number of pixels in height direction per FPRUnit
+	    0xA210: 'FocalPlaneResolutionUnit', // Unit for measuring the focal plane resolution
+	    0xA214: 'SubjectLocation', // Location of subject in image
+	    0xA215: 'ExposureIndex', // Exposure index selected on camera
+	    0xA217: 'SensingMethod', // Image sensor type
+	    0xA300: 'FileSource', // Image source (3 == DSC)
+	    0xA301: 'SceneType', // Scene type (1 == directly photographed)
+	    0xA302: 'CFAPattern', // Color filter array geometric pattern
+	    0xA401: 'CustomRendered', // Special processing
+	    0xA402: 'ExposureMode', // Exposure mode
+	    0xA403: 'WhiteBalance', // 1 = auto white balance, 2 = manual
+	    0xA404: 'DigitalZoomRatio', // Digital zoom ratio
+	    0xA405: 'FocalLengthIn35mmFilm',
+	    0xA406: 'SceneCaptureType', // Type of scene
+	    0xA407: 'GainControl', // Degree of overall image gain adjustment
+	    0xA408: 'Contrast', // Direction of contrast processing applied by camera
+	    0xA409: 'Saturation', // Direction of saturation processing applied by camera
+	    0xA40A: 'Sharpness', // Direction of sharpness processing applied by camera
+	    0xA40B: 'DeviceSettingDescription',
+	    0xA40C: 'SubjectDistanceRange', // Distance to subject
+	    0xA420: 'ImageUniqueID', // Identifier assigned uniquely to each image
+	    0xA430: 'CameraOwnerName',
+	    0xA431: 'BodySerialNumber',
+	    0xA432: 'LensSpecification',
+	    0xA433: 'LensMake',
+	    0xA434: 'LensModel',
+	    0xA435: 'LensSerialNumber',
+	    // ==============
+	    // GPS Info tags:
+	    // ==============
+	    0x0000: 'GPSVersionID',
+	    0x0001: 'GPSLatitudeRef',
+	    0x0002: 'GPSLatitude',
+	    0x0003: 'GPSLongitudeRef',
+	    0x0004: 'GPSLongitude',
+	    0x0005: 'GPSAltitudeRef',
+	    0x0006: 'GPSAltitude',
+	    0x0007: 'GPSTimeStamp',
+	    0x0008: 'GPSSatellites',
+	    0x0009: 'GPSStatus',
+	    0x000A: 'GPSMeasureMode',
+	    0x000B: 'GPSDOP',
+	    0x000C: 'GPSSpeedRef',
+	    0x000D: 'GPSSpeed',
+	    0x000E: 'GPSTrackRef',
+	    0x000F: 'GPSTrack',
+	    0x0010: 'GPSImgDirectionRef',
+	    0x0011: 'GPSImgDirection',
+	    0x0012: 'GPSMapDatum',
+	    0x0013: 'GPSDestLatitudeRef',
+	    0x0014: 'GPSDestLatitude',
+	    0x0015: 'GPSDestLongitudeRef',
+	    0x0016: 'GPSDestLongitude',
+	    0x0017: 'GPSDestBearingRef',
+	    0x0018: 'GPSDestBearing',
+	    0x0019: 'GPSDestDistanceRef',
+	    0x001A: 'GPSDestDistance',
+	    0x001B: 'GPSProcessingMethod',
+	    0x001C: 'GPSAreaInformation',
+	    0x001D: 'GPSDateStamp',
+	    0x001E: 'GPSDifferential',
+	    0x001F: 'GPSHPositioningError'
+	  }
+
+	  loadImage.ExifMap.prototype.stringValues = {
+	    ExposureProgram: {
+	      0: 'Undefined',
+	      1: 'Manual',
+	      2: 'Normal program',
+	      3: 'Aperture priority',
+	      4: 'Shutter priority',
+	      5: 'Creative program',
+	      6: 'Action program',
+	      7: 'Portrait mode',
+	      8: 'Landscape mode'
+	    },
+	    MeteringMode: {
+	      0: 'Unknown',
+	      1: 'Average',
+	      2: 'CenterWeightedAverage',
+	      3: 'Spot',
+	      4: 'MultiSpot',
+	      5: 'Pattern',
+	      6: 'Partial',
+	      255: 'Other'
+	    },
+	    LightSource: {
+	      0: 'Unknown',
+	      1: 'Daylight',
+	      2: 'Fluorescent',
+	      3: 'Tungsten (incandescent light)',
+	      4: 'Flash',
+	      9: 'Fine weather',
+	      10: 'Cloudy weather',
+	      11: 'Shade',
+	      12: 'Daylight fluorescent (D 5700 - 7100K)',
+	      13: 'Day white fluorescent (N 4600 - 5400K)',
+	      14: 'Cool white fluorescent (W 3900 - 4500K)',
+	      15: 'White fluorescent (WW 3200 - 3700K)',
+	      17: 'Standard light A',
+	      18: 'Standard light B',
+	      19: 'Standard light C',
+	      20: 'D55',
+	      21: 'D65',
+	      22: 'D75',
+	      23: 'D50',
+	      24: 'ISO studio tungsten',
+	      255: 'Other'
+	    },
+	    Flash: {
+	      0x0000: 'Flash did not fire',
+	      0x0001: 'Flash fired',
+	      0x0005: 'Strobe return light not detected',
+	      0x0007: 'Strobe return light detected',
+	      0x0009: 'Flash fired, compulsory flash mode',
+	      0x000D: 'Flash fired, compulsory flash mode, return light not detected',
+	      0x000F: 'Flash fired, compulsory flash mode, return light detected',
+	      0x0010: 'Flash did not fire, compulsory flash mode',
+	      0x0018: 'Flash did not fire, auto mode',
+	      0x0019: 'Flash fired, auto mode',
+	      0x001D: 'Flash fired, auto mode, return light not detected',
+	      0x001F: 'Flash fired, auto mode, return light detected',
+	      0x0020: 'No flash function',
+	      0x0041: 'Flash fired, red-eye reduction mode',
+	      0x0045: 'Flash fired, red-eye reduction mode, return light not detected',
+	      0x0047: 'Flash fired, red-eye reduction mode, return light detected',
+	      0x0049: 'Flash fired, compulsory flash mode, red-eye reduction mode',
+	      0x004D: 'Flash fired, compulsory flash mode, red-eye reduction mode, return light not detected',
+	      0x004F: 'Flash fired, compulsory flash mode, red-eye reduction mode, return light detected',
+	      0x0059: 'Flash fired, auto mode, red-eye reduction mode',
+	      0x005D: 'Flash fired, auto mode, return light not detected, red-eye reduction mode',
+	      0x005F: 'Flash fired, auto mode, return light detected, red-eye reduction mode'
+	    },
+	    SensingMethod: {
+	      1: 'Undefined',
+	      2: 'One-chip color area sensor',
+	      3: 'Two-chip color area sensor',
+	      4: 'Three-chip color area sensor',
+	      5: 'Color sequential area sensor',
+	      7: 'Trilinear sensor',
+	      8: 'Color sequential linear sensor'
+	    },
+	    SceneCaptureType: {
+	      0: 'Standard',
+	      1: 'Landscape',
+	      2: 'Portrait',
+	      3: 'Night scene'
+	    },
+	    SceneType: {
+	      1: 'Directly photographed'
+	    },
+	    CustomRendered: {
+	      0: 'Normal process',
+	      1: 'Custom process'
+	    },
+	    WhiteBalance: {
+	      0: 'Auto white balance',
+	      1: 'Manual white balance'
+	    },
+	    GainControl: {
+	      0: 'None',
+	      1: 'Low gain up',
+	      2: 'High gain up',
+	      3: 'Low gain down',
+	      4: 'High gain down'
+	    },
+	    Contrast: {
+	      0: 'Normal',
+	      1: 'Soft',
+	      2: 'Hard'
+	    },
+	    Saturation: {
+	      0: 'Normal',
+	      1: 'Low saturation',
+	      2: 'High saturation'
+	    },
+	    Sharpness: {
+	      0: 'Normal',
+	      1: 'Soft',
+	      2: 'Hard'
+	    },
+	    SubjectDistanceRange: {
+	      0: 'Unknown',
+	      1: 'Macro',
+	      2: 'Close view',
+	      3: 'Distant view'
+	    },
+	    FileSource: {
+	      3: 'DSC'
+	    },
+	    ComponentsConfiguration: {
+	      0: '',
+	      1: 'Y',
+	      2: 'Cb',
+	      3: 'Cr',
+	      4: 'R',
+	      5: 'G',
+	      6: 'B'
+	    },
+	    Orientation: {
+	      1: 'top-left',
+	      2: 'top-right',
+	      3: 'bottom-right',
+	      4: 'bottom-left',
+	      5: 'left-top',
+	      6: 'right-top',
+	      7: 'right-bottom',
+	      8: 'left-bottom'
+	    }
+	  }
+
+	  loadImage.ExifMap.prototype.getText = function (id) {
+	    var value = this.get(id)
+	    switch (id) {
+	      case 'LightSource':
+	      case 'Flash':
+	      case 'MeteringMode':
+	      case 'ExposureProgram':
+	      case 'SensingMethod':
+	      case 'SceneCaptureType':
+	      case 'SceneType':
+	      case 'CustomRendered':
+	      case 'WhiteBalance':
+	      case 'GainControl':
+	      case 'Contrast':
+	      case 'Saturation':
+	      case 'Sharpness':
+	      case 'SubjectDistanceRange':
+	      case 'FileSource':
+	      case 'Orientation':
+	        return this.stringValues[id][value]
+	      case 'ExifVersion':
+	      case 'FlashpixVersion':
+	        return String.fromCharCode(value[0], value[1], value[2], value[3])
+	      case 'ComponentsConfiguration':
+	        return this.stringValues[id][value[0]] +
+	        this.stringValues[id][value[1]] +
+	        this.stringValues[id][value[2]] +
+	        this.stringValues[id][value[3]]
+	      case 'GPSVersionID':
+	        return value[0] + '.' + value[1] + '.' + value[2] + '.' + value[3]
+	    }
+	    return String(value)
+	  }
+
+	  ;(function (exifMapPrototype) {
+	    var tags = exifMapPrototype.tags
+	    var map = exifMapPrototype.map
+	    var prop
+	    // Map the tag names to tags:
+	    for (prop in tags) {
+	      if (tags.hasOwnProperty(prop)) {
+	        map[tags[prop]] = prop
+	      }
+	    }
+	  }(loadImage.ExifMap.prototype))
+
+	  loadImage.ExifMap.prototype.getAll = function () {
+	    var map = {}
+	    var prop
+	    var id
+	    for (prop in this) {
+	      if (this.hasOwnProperty(prop)) {
+	        id = this.tags[prop]
+	        if (id) {
+	          map[id] = this.getText(id)
+	        }
+	      }
+	    }
+	    return map
+	  }
+	}))
+
+
+/***/ },
+/* 94 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*
+	 * JavaScript Load Image Orientation
 	 * https://github.com/blueimp/JavaScript-Load-Image
 	 *
 	 * Copyright 2013, Sebastian Tschan
@@ -11623,256 +12425,171 @@ module.exports =
 	 * http://www.opensource.org/licenses/MIT
 	 */
 
-	/*global define, module, require, window, console */
+	/*global define, module, require, window */
 
 	;(function (factory) {
-	  'use strict';
-
+	  'use strict'
 	  if (true) {
 	    // Register as an anonymous AMD module:
-	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(18), __webpack_require__(59)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-	  } else if ((typeof module === 'undefined' ? 'undefined' : _typeof(module)) === 'object' && module.exports) {
-	    factory(require('./load-image'), require('./load-image-meta'));
+	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(21)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__))
+	  } else if (typeof module === 'object' && module.exports) {
+	    factory(require('./load-image'))
 	  } else {
 	    // Browser globals:
-	    factory(window.loadImage);
+	    factory(window.loadImage)
 	  }
-	})(function (loadImage) {
-	  'use strict';
+	}(function (loadImage) {
+	  'use strict'
 
-	  loadImage.ExifMap = function () {
-	    return this;
-	  };
+	  var originalHasCanvasOption = loadImage.hasCanvasOption
+	  var originalTransformCoordinates = loadImage.transformCoordinates
+	  var originalGetTransformedOptions = loadImage.getTransformedOptions
 
-	  loadImage.ExifMap.prototype.map = {
-	    'Orientation': 0x0112
-	  };
+	  // This method is used to determine if the target image
+	  // should be a canvas element:
+	  loadImage.hasCanvasOption = function (options) {
+	    return !!options.orientation ||
+	      originalHasCanvasOption.call(loadImage, options)
+	  }
 
-	  loadImage.ExifMap.prototype.get = function (id) {
-	    return this[id] || this[this.map[id]];
-	  };
+	  // Transform image orientation based on
+	  // the given EXIF orientation option:
+	  loadImage.transformCoordinates = function (canvas, options) {
+	    originalTransformCoordinates.call(loadImage, canvas, options)
+	    var ctx = canvas.getContext('2d')
+	    var width = canvas.width
+	    var height = canvas.height
+	    var styleWidth = canvas.style.width
+	    var styleHeight = canvas.style.height
+	    var orientation = options.orientation
+	    if (!orientation || orientation > 8) {
+	      return
+	    }
+	    if (orientation > 4) {
+	      canvas.width = height
+	      canvas.height = width
+	      canvas.style.width = styleHeight
+	      canvas.style.height = styleWidth
+	    }
+	    console.log('detected', orientation);
+	    switch (orientation) {
+	      case 2:
+	        // horizontal flip
+	        ctx.translate(width, 0)
+	        ctx.scale(-1, 1)
+	        break
+	      case 3:
+	        // 180° rotate left
+	        ctx.translate(width, height)
+	        ctx.rotate(Math.PI)
+	        break
+	      case 4:
+	        // vertical flip
+	        ctx.translate(0, height)
+	        ctx.scale(1, -1)
+	        break
+	      case 5:
+	        // vertical flip + 90 rotate right
+	        ctx.rotate(0.5 * Math.PI)
+	        ctx.scale(1, -1)
+	        break
+	      case 6:
+	        // 90° rotate right
+	        ctx.rotate(0.5 * Math.PI)
+	        ctx.translate(0, -height)
+	        break
+	      case 7:
+	        // horizontal flip + 90 rotate right
+	        ctx.rotate(0.5 * Math.PI)
+	        ctx.translate(width, -height)
+	        ctx.scale(-1, 1)
+	        break
+	      case 8:
+	        // 90° rotate left
+	        ctx.rotate(-0.5 * Math.PI)
+	        ctx.translate(-width, 0)
+	        break
+	    }
+	  }
 
-	  loadImage.getExifThumbnail = function (dataView, offset, length) {
-	    var hexData, i, b;
-	    if (!length || offset + length > dataView.byteLength) {
-	      console.log('Invalid Exif data: Invalid thumbnail data.');
-	      return;
+	  // Transforms coordinate and dimension options
+	  // based on the given orientation option:
+	  loadImage.getTransformedOptions = function (img, opts) {
+	    var options = originalGetTransformedOptions.call(loadImage, img, opts)
+	    var orientation = options.orientation
+	    var newOptions
+	    var i
+	    if (!orientation || orientation > 8 || orientation === 1) {
+	      return options
 	    }
-	    hexData = [];
-	    for (i = 0; i < length; i += 1) {
-	      b = dataView.getUint8(offset + i);
-	      hexData.push((b < 16 ? '0' : '') + b.toString(16));
-	    }
-	    return 'data:image/jpeg,%' + hexData.join('%');
-	  };
-
-	  loadImage.exifTagTypes = {
-	    // byte, 8-bit unsigned int:
-	    1: {
-	      getValue: function getValue(dataView, dataOffset) {
-	        return dataView.getUint8(dataOffset);
-	      },
-	      size: 1
-	    },
-	    // ascii, 8-bit byte:
-	    2: {
-	      getValue: function getValue(dataView, dataOffset) {
-	        return String.fromCharCode(dataView.getUint8(dataOffset));
-	      },
-	      size: 1,
-	      ascii: true
-	    },
-	    // short, 16 bit int:
-	    3: {
-	      getValue: function getValue(dataView, dataOffset, littleEndian) {
-	        return dataView.getUint16(dataOffset, littleEndian);
-	      },
-	      size: 2
-	    },
-	    // long, 32 bit int:
-	    4: {
-	      getValue: function getValue(dataView, dataOffset, littleEndian) {
-	        return dataView.getUint32(dataOffset, littleEndian);
-	      },
-	      size: 4
-	    },
-	    // rational = two long values, first is numerator, second is denominator:
-	    5: {
-	      getValue: function getValue(dataView, dataOffset, littleEndian) {
-	        return dataView.getUint32(dataOffset, littleEndian) / dataView.getUint32(dataOffset + 4, littleEndian);
-	      },
-	      size: 8
-	    },
-	    // slong, 32 bit signed int:
-	    9: {
-	      getValue: function getValue(dataView, dataOffset, littleEndian) {
-	        return dataView.getInt32(dataOffset, littleEndian);
-	      },
-	      size: 4
-	    },
-	    // srational, two slongs, first is numerator, second is denominator:
-	    10: {
-	      getValue: function getValue(dataView, dataOffset, littleEndian) {
-	        return dataView.getInt32(dataOffset, littleEndian) / dataView.getInt32(dataOffset + 4, littleEndian);
-	      },
-	      size: 8
-	    }
-	  };
-	  // undefined, 8-bit byte, value depending on field:
-	  loadImage.exifTagTypes[7] = loadImage.exifTagTypes[1];
-
-	  loadImage.getExifValue = function (dataView, tiffOffset, offset, type, length, littleEndian) {
-	    var tagType = loadImage.exifTagTypes[type];
-	    var tagSize;
-	    var dataOffset;
-	    var values;
-	    var i;
-	    var str;
-	    var c;
-	    if (!tagType) {
-	      console.log('Invalid Exif data: Invalid tag type.');
-	      return;
-	    }
-	    tagSize = tagType.size * length;
-	    // Determine if the value is contained in the dataOffset bytes,
-	    // or if the value at the dataOffset is a pointer to the actual data:
-	    dataOffset = tagSize > 4 ? tiffOffset + dataView.getUint32(offset + 8, littleEndian) : offset + 8;
-	    if (dataOffset + tagSize > dataView.byteLength) {
-	      console.log('Invalid Exif data: Invalid data offset.');
-	      return;
-	    }
-	    if (length === 1) {
-	      return tagType.getValue(dataView, dataOffset, littleEndian);
-	    }
-	    values = [];
-	    for (i = 0; i < length; i += 1) {
-	      values[i] = tagType.getValue(dataView, dataOffset + i * tagType.size, littleEndian);
-	    }
-	    if (tagType.ascii) {
-	      str = '';
-	      // Concatenate the chars:
-	      for (i = 0; i < values.length; i += 1) {
-	        c = values[i];
-	        // Ignore the terminating NULL byte(s):
-	        if (c === '\u0000') {
-	          break;
-	        }
-	        str += c;
-	      }
-	      return str;
-	    }
-	    return values;
-	  };
-
-	  loadImage.parseExifTag = function (dataView, tiffOffset, offset, littleEndian, data) {
-	    var tag = dataView.getUint16(offset, littleEndian);
-	    data.exif[tag] = loadImage.getExifValue(dataView, tiffOffset, offset, dataView.getUint16(offset + 2, littleEndian), // tag type
-	    dataView.getUint32(offset + 4, littleEndian), // tag length
-	    littleEndian);
-	  };
-
-	  loadImage.parseExifTags = function (dataView, tiffOffset, dirOffset, littleEndian, data) {
-	    var tagsNumber, dirEndOffset, i;
-	    if (dirOffset + 6 > dataView.byteLength) {
-	      console.log('Invalid Exif data: Invalid directory offset.');
-	      return;
-	    }
-	    tagsNumber = dataView.getUint16(dirOffset, littleEndian);
-	    dirEndOffset = dirOffset + 2 + 12 * tagsNumber;
-	    if (dirEndOffset + 4 > dataView.byteLength) {
-	      console.log('Invalid Exif data: Invalid directory size.');
-	      return;
-	    }
-	    for (i = 0; i < tagsNumber; i += 1) {
-	      this.parseExifTag(dataView, tiffOffset, dirOffset + 2 + 12 * i, // tag offset
-	      littleEndian, data);
-	    }
-	    // Return the offset to the next directory:
-	    return dataView.getUint32(dirEndOffset, littleEndian);
-	  };
-
-	  loadImage.parseExifData = function (dataView, offset, length, data, options) {
-	    if (options.disableExif) {
-	      return;
-	    }
-	    var tiffOffset = offset + 10;
-	    var littleEndian;
-	    var dirOffset;
-	    var thumbnailData;
-	    // Check for the ASCII code for "Exif" (0x45786966):
-	    if (dataView.getUint32(offset + 4) !== 0x45786966) {
-	      // No Exif data, might be XMP data instead
-	      return;
-	    }
-	    if (tiffOffset + 8 > dataView.byteLength) {
-	      console.log('Invalid Exif data: Invalid segment size.');
-	      return;
-	    }
-	    // Check for the two null bytes:
-	    if (dataView.getUint16(offset + 8) !== 0x0000) {
-	      console.log('Invalid Exif data: Missing byte alignment offset.');
-	      return;
-	    }
-	    // Check the byte alignment:
-	    switch (dataView.getUint16(tiffOffset)) {
-	      case 0x4949:
-	        littleEndian = true;
-	        break;
-	      case 0x4D4D:
-	        littleEndian = false;
-	        break;
-	      default:
-	        console.log('Invalid Exif data: Invalid byte alignment marker.');
-	        return;
-	    }
-	    // Check for the TIFF tag marker (0x002A):
-	    if (dataView.getUint16(tiffOffset + 2, littleEndian) !== 0x002A) {
-	      console.log('Invalid Exif data: Missing TIFF marker.');
-	      return;
-	    }
-	    // Retrieve the directory offset bytes, usually 0x00000008 or 8 decimal:
-	    dirOffset = dataView.getUint32(tiffOffset + 4, littleEndian);
-	    // Create the exif object to store the tags:
-	    data.exif = new loadImage.ExifMap();
-	    // Parse the tags of the main image directory and retrieve the
-	    // offset to the next directory, usually the thumbnail directory:
-	    dirOffset = loadImage.parseExifTags(dataView, tiffOffset, tiffOffset + dirOffset, littleEndian, data);
-	    if (dirOffset && !options.disableExifThumbnail) {
-	      thumbnailData = { exif: {} };
-	      dirOffset = loadImage.parseExifTags(dataView, tiffOffset, tiffOffset + dirOffset, littleEndian, thumbnailData);
-	      // Check for JPEG Thumbnail offset:
-	      if (thumbnailData.exif[0x0201]) {
-	        data.exif.Thumbnail = loadImage.getExifThumbnail(dataView, tiffOffset + thumbnailData.exif[0x0201], thumbnailData.exif[0x0202] // Thumbnail data length
-	        );
+	    newOptions = {}
+	    for (i in options) {
+	      if (options.hasOwnProperty(i)) {
+	        newOptions[i] = options[i]
 	      }
 	    }
-	    // Check for Exif Sub IFD Pointer:
-	    if (data.exif[0x8769] && !options.disableExifSub) {
-	      loadImage.parseExifTags(dataView, tiffOffset, tiffOffset + data.exif[0x8769], // directory offset
-	      littleEndian, data);
+	    switch (options.orientation) {
+	      case 2:
+	        // horizontal flip
+	        newOptions.left = options.right
+	        newOptions.right = options.left
+	        break
+	      case 3:
+	        // 180° rotate left
+	        newOptions.left = options.right
+	        newOptions.top = options.bottom
+	        newOptions.right = options.left
+	        newOptions.bottom = options.top
+	        break
+	      case 4:
+	        // vertical flip
+	        newOptions.top = options.bottom
+	        newOptions.bottom = options.top
+	        break
+	      case 5:
+	        // vertical flip + 90 rotate right
+	        newOptions.left = options.top
+	        newOptions.top = options.left
+	        newOptions.right = options.bottom
+	        newOptions.bottom = options.right
+	        break
+	      case 6:
+	        // 90° rotate right
+	        newOptions.left = options.top
+	        newOptions.top = options.right
+	        newOptions.right = options.bottom
+	        newOptions.bottom = options.left
+	        break
+	      case 7:
+	        // horizontal flip + 90 rotate right
+	        newOptions.left = options.bottom
+	        newOptions.top = options.right
+	        newOptions.right = options.top
+	        newOptions.bottom = options.left
+	        break
+	      case 8:
+	        // 90° rotate left
+	        newOptions.left = options.bottom
+	        newOptions.top = options.left
+	        newOptions.right = options.top
+	        newOptions.bottom = options.right
+	        break
 	    }
-	    // Check for GPS Info IFD Pointer:
-	    if (data.exif[0x8825] && !options.disableExifGps) {
-	      loadImage.parseExifTags(dataView, tiffOffset, tiffOffset + data.exif[0x8825], // directory offset
-	      littleEndian, data);
+	    if (options.orientation > 4) {
+	      newOptions.maxWidth = options.maxHeight
+	      newOptions.maxHeight = options.maxWidth
+	      newOptions.minWidth = options.minHeight
+	      newOptions.minHeight = options.minWidth
+	      newOptions.sourceWidth = options.sourceHeight
+	      newOptions.sourceHeight = options.sourceWidth
 	    }
-	  };
+	    return newOptions
+	  }
+	}))
 
-	  // Registers the Exif parser for the APP1 JPEG meta data segment:
-	  loadImage.metaDataParsers.jpeg[0xffe1].push(loadImage.parseExifData);
-
-	  // Adds the following properties to the parseMetaData callback data:
-	  // * exif: The exif tags, parsed by the parseExifData method
-
-	  // Adds the following options to the parseMetaData method:
-	  // * disableExif: Disables Exif parsing.
-	  // * disableExifThumbnail: Disables parsing of the Exif Thumbnail.
-	  // * disableExifSub: Disables parsing of the Exif Sub IFD.
-	  // * disableExifGps: Disables parsing of the Exif GPS Info IFD.
-	});
 
 /***/ },
-/* 92 */
+/* 95 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -11908,7 +12625,7 @@ module.exports =
 	module.exports = camelize;
 
 /***/ },
-/* 93 */
+/* 96 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -11924,7 +12641,7 @@ module.exports =
 
 	'use strict';
 
-	var camelize = __webpack_require__(92);
+	var camelize = __webpack_require__(95);
 
 	var msPattern = /^-ms-/;
 
@@ -11952,7 +12669,7 @@ module.exports =
 	module.exports = camelizeStyleName;
 
 /***/ },
-/* 94 */
+/* 97 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -11968,7 +12685,7 @@ module.exports =
 	 * 
 	 */
 
-	var isTextNode = __webpack_require__(102);
+	var isTextNode = __webpack_require__(105);
 
 	/*eslint-disable no-bitwise */
 
@@ -11996,7 +12713,7 @@ module.exports =
 	module.exports = containsNode;
 
 /***/ },
-/* 95 */
+/* 98 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
@@ -12128,7 +12845,7 @@ module.exports =
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
 
 /***/ },
-/* 96 */
+/* 99 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
@@ -12148,8 +12865,8 @@ module.exports =
 
 	var ExecutionEnvironment = __webpack_require__(7);
 
-	var createArrayFromMixed = __webpack_require__(95);
-	var getMarkupWrap = __webpack_require__(97);
+	var createArrayFromMixed = __webpack_require__(98);
+	var getMarkupWrap = __webpack_require__(100);
 	var invariant = __webpack_require__(3);
 
 	/**
@@ -12217,7 +12934,7 @@ module.exports =
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
 
 /***/ },
-/* 97 */
+/* 100 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
@@ -12317,7 +13034,7 @@ module.exports =
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
 
 /***/ },
-/* 98 */
+/* 101 */
 /***/ function(module, exports) {
 
 	/**
@@ -12360,7 +13077,7 @@ module.exports =
 	module.exports = getUnboundedScrollPosition;
 
 /***/ },
-/* 99 */
+/* 102 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -12397,7 +13114,7 @@ module.exports =
 	module.exports = hyphenate;
 
 /***/ },
-/* 100 */
+/* 103 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -12413,7 +13130,7 @@ module.exports =
 
 	'use strict';
 
-	var hyphenate = __webpack_require__(99);
+	var hyphenate = __webpack_require__(102);
 
 	var msPattern = /^ms-/;
 
@@ -12440,7 +13157,7 @@ module.exports =
 	module.exports = hyphenateStyleName;
 
 /***/ },
-/* 101 */
+/* 104 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -12467,7 +13184,7 @@ module.exports =
 	module.exports = isNode;
 
 /***/ },
-/* 102 */
+/* 105 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -12483,7 +13200,7 @@ module.exports =
 	 * @typechecks
 	 */
 
-	var isNode = __webpack_require__(101);
+	var isNode = __webpack_require__(104);
 
 	/**
 	 * @param {*} object The object to check.
@@ -12496,7 +13213,7 @@ module.exports =
 	module.exports = isTextNode;
 
 /***/ },
-/* 103 */
+/* 106 */
 /***/ function(module, exports) {
 
 	/**
@@ -12551,7 +13268,7 @@ module.exports =
 	module.exports = mapObject;
 
 /***/ },
-/* 104 */
+/* 107 */
 /***/ function(module, exports) {
 
 	/**
@@ -12585,7 +13302,7 @@ module.exports =
 	module.exports = memoizeStringOnly;
 
 /***/ },
-/* 105 */
+/* 108 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -12612,7 +13329,7 @@ module.exports =
 	module.exports = performance || {};
 
 /***/ },
-/* 106 */
+/* 109 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -12628,7 +13345,7 @@ module.exports =
 	 * @typechecks
 	 */
 
-	var performance = __webpack_require__(105);
+	var performance = __webpack_require__(108);
 
 	var performanceNow;
 
@@ -12650,16 +13367,16 @@ module.exports =
 	module.exports = performanceNow;
 
 /***/ },
-/* 107 */
+/* 110 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	module.exports = __webpack_require__(121);
+	module.exports = __webpack_require__(124);
 
 
 /***/ },
-/* 108 */
+/* 111 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -12677,7 +13394,7 @@ module.exports =
 
 	var ReactDOMComponentTree = __webpack_require__(6);
 
-	var focusNode = __webpack_require__(61);
+	var focusNode = __webpack_require__(62);
 
 	var AutoFocusUtils = {
 	  focusDOMComponent: function () {
@@ -12688,7 +13405,7 @@ module.exports =
 	module.exports = AutoFocusUtils;
 
 /***/ },
-/* 109 */
+/* 112 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -12707,9 +13424,9 @@ module.exports =
 	var EventConstants = __webpack_require__(13);
 	var EventPropagators = __webpack_require__(24);
 	var ExecutionEnvironment = __webpack_require__(7);
-	var FallbackCompositionState = __webpack_require__(115);
-	var SyntheticCompositionEvent = __webpack_require__(159);
-	var SyntheticInputEvent = __webpack_require__(162);
+	var FallbackCompositionState = __webpack_require__(118);
+	var SyntheticCompositionEvent = __webpack_require__(162);
+	var SyntheticInputEvent = __webpack_require__(165);
 
 	var keyOf = __webpack_require__(16);
 
@@ -13081,7 +13798,7 @@ module.exports =
 	module.exports = BeforeInputEventPlugin;
 
 /***/ },
-/* 110 */
+/* 113 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -13097,14 +13814,14 @@ module.exports =
 
 	'use strict';
 
-	var CSSProperty = __webpack_require__(63);
+	var CSSProperty = __webpack_require__(64);
 	var ExecutionEnvironment = __webpack_require__(7);
 	var ReactInstrumentation = __webpack_require__(8);
 
-	var camelizeStyleName = __webpack_require__(93);
-	var dangerousStyleValue = __webpack_require__(168);
-	var hyphenateStyleName = __webpack_require__(100);
-	var memoizeStringOnly = __webpack_require__(104);
+	var camelizeStyleName = __webpack_require__(96);
+	var dangerousStyleValue = __webpack_require__(171);
+	var hyphenateStyleName = __webpack_require__(103);
+	var memoizeStringOnly = __webpack_require__(107);
 	var warning = __webpack_require__(2);
 
 	var processStyleName = memoizeStringOnly(function (styleName) {
@@ -13292,7 +14009,7 @@ module.exports =
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
 
 /***/ },
-/* 111 */
+/* 114 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -13318,7 +14035,7 @@ module.exports =
 
 	var getEventTarget = __webpack_require__(53);
 	var isEventSupported = __webpack_require__(55);
-	var isTextInputElement = __webpack_require__(89);
+	var isTextInputElement = __webpack_require__(90);
 	var keyOf = __webpack_require__(16);
 
 	var topLevelTypes = EventConstants.topLevelTypes;
@@ -13622,7 +14339,7 @@ module.exports =
 	module.exports = ChangeEventPlugin;
 
 /***/ },
-/* 112 */
+/* 115 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -13640,10 +14357,10 @@ module.exports =
 
 	var _prodInvariant = __webpack_require__(4);
 
-	var DOMLazyTree = __webpack_require__(20);
+	var DOMLazyTree = __webpack_require__(19);
 	var ExecutionEnvironment = __webpack_require__(7);
 
-	var createNodesFromMarkup = __webpack_require__(96);
+	var createNodesFromMarkup = __webpack_require__(99);
 	var emptyFunction = __webpack_require__(9);
 	var invariant = __webpack_require__(3);
 
@@ -13676,7 +14393,7 @@ module.exports =
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
 
 /***/ },
-/* 113 */
+/* 116 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -13708,7 +14425,7 @@ module.exports =
 	module.exports = DefaultEventPluginOrder;
 
 /***/ },
-/* 114 */
+/* 117 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -13818,7 +14535,7 @@ module.exports =
 	module.exports = EnterLeaveEventPlugin;
 
 /***/ },
-/* 115 */
+/* 118 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -13838,7 +14555,7 @@ module.exports =
 
 	var PooledClass = __webpack_require__(17);
 
-	var getTextContentAccessor = __webpack_require__(87);
+	var getTextContentAccessor = __webpack_require__(88);
 
 	/**
 	 * This helper class stores information about text content of a target node,
@@ -13918,7 +14635,7 @@ module.exports =
 	module.exports = FallbackCompositionState;
 
 /***/ },
-/* 116 */
+/* 119 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -13934,7 +14651,7 @@ module.exports =
 
 	'use strict';
 
-	var DOMProperty = __webpack_require__(19);
+	var DOMProperty = __webpack_require__(18);
 
 	var MUST_USE_PROPERTY = DOMProperty.injection.MUST_USE_PROPERTY;
 	var HAS_BOOLEAN_VALUE = DOMProperty.injection.HAS_BOOLEAN_VALUE;
@@ -14132,7 +14849,7 @@ module.exports =
 	module.exports = HTMLDOMPropertyConfig;
 
 /***/ },
-/* 117 */
+/* 120 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -14150,16 +14867,16 @@ module.exports =
 
 	var _assign = __webpack_require__(5);
 
-	var ReactChildren = __webpack_require__(66);
+	var ReactChildren = __webpack_require__(67);
 	var ReactComponent = __webpack_require__(42);
-	var ReactPureComponent = __webpack_require__(149);
-	var ReactClass = __webpack_require__(67);
-	var ReactDOMFactories = __webpack_require__(127);
+	var ReactPureComponent = __webpack_require__(152);
+	var ReactClass = __webpack_require__(68);
+	var ReactDOMFactories = __webpack_require__(130);
 	var ReactElement = __webpack_require__(11);
-	var ReactPropTypes = __webpack_require__(80);
-	var ReactVersion = __webpack_require__(81);
+	var ReactPropTypes = __webpack_require__(81);
+	var ReactVersion = __webpack_require__(82);
 
-	var onlyChild = __webpack_require__(174);
+	var onlyChild = __webpack_require__(177);
 	var warning = __webpack_require__(2);
 
 	var createElement = ReactElement.createElement;
@@ -14167,7 +14884,7 @@ module.exports =
 	var cloneElement = ReactElement.cloneElement;
 
 	if (process.env.NODE_ENV !== 'production') {
-	  var ReactElementValidator = __webpack_require__(72);
+	  var ReactElementValidator = __webpack_require__(73);
 	  createElement = ReactElementValidator.createElement;
 	  createFactory = ReactElementValidator.createFactory;
 	  cloneElement = ReactElementValidator.cloneElement;
@@ -14227,7 +14944,7 @@ module.exports =
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
 
 /***/ },
-/* 118 */
+/* 121 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -14243,9 +14960,9 @@ module.exports =
 
 	'use strict';
 
-	var ReactReconciler = __webpack_require__(21);
+	var ReactReconciler = __webpack_require__(20);
 
-	var instantiateReactComponent = __webpack_require__(88);
+	var instantiateReactComponent = __webpack_require__(89);
 	var KeyEscapeUtils = __webpack_require__(40);
 	var shouldUpdateReactComponent = __webpack_require__(56);
 	var traverseAllChildren = __webpack_require__(57);
@@ -14384,7 +15101,7 @@ module.exports =
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
 
 /***/ },
-/* 119 */
+/* 122 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -14452,7 +15169,7 @@ module.exports =
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
 
 /***/ },
-/* 120 */
+/* 123 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -14477,11 +15194,11 @@ module.exports =
 	var ReactErrorUtils = __webpack_require__(44);
 	var ReactInstanceMap = __webpack_require__(25);
 	var ReactInstrumentation = __webpack_require__(8);
-	var ReactNodeTypes = __webpack_require__(79);
+	var ReactNodeTypes = __webpack_require__(80);
 	var ReactPropTypeLocations = __webpack_require__(32);
-	var ReactReconciler = __webpack_require__(21);
+	var ReactReconciler = __webpack_require__(20);
 
-	var checkReactTypeSpec = __webpack_require__(84);
+	var checkReactTypeSpec = __webpack_require__(85);
 	var emptyObject = __webpack_require__(22);
 	var invariant = __webpack_require__(3);
 	var shallowEqual = __webpack_require__(36);
@@ -15402,7 +16119,7 @@ module.exports =
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
 
 /***/ },
-/* 121 */
+/* 124 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -15421,15 +16138,15 @@ module.exports =
 	'use strict';
 
 	var ReactDOMComponentTree = __webpack_require__(6);
-	var ReactDefaultInjection = __webpack_require__(140);
-	var ReactMount = __webpack_require__(77);
-	var ReactReconciler = __webpack_require__(21);
+	var ReactDefaultInjection = __webpack_require__(143);
+	var ReactMount = __webpack_require__(78);
+	var ReactReconciler = __webpack_require__(20);
 	var ReactUpdates = __webpack_require__(12);
-	var ReactVersion = __webpack_require__(81);
+	var ReactVersion = __webpack_require__(82);
 
-	var findDOMNode = __webpack_require__(169);
-	var getHostComponentFromComposite = __webpack_require__(86);
-	var renderSubtreeIntoContainer = __webpack_require__(176);
+	var findDOMNode = __webpack_require__(172);
+	var getHostComponentFromComposite = __webpack_require__(87);
+	var renderSubtreeIntoContainer = __webpack_require__(179);
 	var warning = __webpack_require__(2);
 
 	ReactDefaultInjection.inject();
@@ -15509,7 +16226,7 @@ module.exports =
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
 
 /***/ },
-/* 122 */
+/* 125 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -15538,7 +16255,7 @@ module.exports =
 	module.exports = ReactDOMButton;
 
 /***/ },
-/* 123 */
+/* 126 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -15559,27 +16276,27 @@ module.exports =
 	var _prodInvariant = __webpack_require__(4),
 	    _assign = __webpack_require__(5);
 
-	var AutoFocusUtils = __webpack_require__(108);
-	var CSSPropertyOperations = __webpack_require__(110);
-	var DOMLazyTree = __webpack_require__(20);
+	var AutoFocusUtils = __webpack_require__(111);
+	var CSSPropertyOperations = __webpack_require__(113);
+	var DOMLazyTree = __webpack_require__(19);
 	var DOMNamespaces = __webpack_require__(38);
-	var DOMProperty = __webpack_require__(19);
-	var DOMPropertyOperations = __webpack_require__(65);
+	var DOMProperty = __webpack_require__(18);
+	var DOMPropertyOperations = __webpack_require__(66);
 	var EventConstants = __webpack_require__(13);
 	var EventPluginHub = __webpack_require__(23);
 	var EventPluginRegistry = __webpack_require__(30);
 	var ReactBrowserEventEmitter = __webpack_require__(31);
-	var ReactComponentBrowserEnvironment = __webpack_require__(68);
-	var ReactDOMButton = __webpack_require__(122);
-	var ReactDOMComponentFlags = __webpack_require__(69);
+	var ReactComponentBrowserEnvironment = __webpack_require__(69);
+	var ReactDOMButton = __webpack_require__(125);
+	var ReactDOMComponentFlags = __webpack_require__(70);
 	var ReactDOMComponentTree = __webpack_require__(6);
-	var ReactDOMInput = __webpack_require__(130);
-	var ReactDOMOption = __webpack_require__(133);
-	var ReactDOMSelect = __webpack_require__(70);
-	var ReactDOMTextarea = __webpack_require__(136);
+	var ReactDOMInput = __webpack_require__(133);
+	var ReactDOMOption = __webpack_require__(136);
+	var ReactDOMSelect = __webpack_require__(71);
+	var ReactDOMTextarea = __webpack_require__(139);
 	var ReactInstrumentation = __webpack_require__(8);
-	var ReactMultiChild = __webpack_require__(147);
-	var ReactServerRenderingTransaction = __webpack_require__(152);
+	var ReactMultiChild = __webpack_require__(150);
+	var ReactServerRenderingTransaction = __webpack_require__(155);
 
 	var emptyFunction = __webpack_require__(9);
 	var escapeTextContentForBrowser = __webpack_require__(34);
@@ -16569,7 +17286,7 @@ module.exports =
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
 
 /***/ },
-/* 124 */
+/* 127 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -16608,7 +17325,7 @@ module.exports =
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
 
 /***/ },
-/* 125 */
+/* 128 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -16624,9 +17341,9 @@ module.exports =
 
 	'use strict';
 
-	var ReactDOMNullInputValuePropDevtool = __webpack_require__(132);
-	var ReactDOMUnknownPropertyDevtool = __webpack_require__(138);
-	var ReactDebugTool = __webpack_require__(71);
+	var ReactDOMNullInputValuePropDevtool = __webpack_require__(135);
+	var ReactDOMUnknownPropertyDevtool = __webpack_require__(141);
+	var ReactDebugTool = __webpack_require__(72);
 
 	var warning = __webpack_require__(2);
 
@@ -16681,7 +17398,7 @@ module.exports =
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
 
 /***/ },
-/* 126 */
+/* 129 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -16699,7 +17416,7 @@ module.exports =
 
 	var _assign = __webpack_require__(5);
 
-	var DOMLazyTree = __webpack_require__(20);
+	var DOMLazyTree = __webpack_require__(19);
 	var ReactDOMComponentTree = __webpack_require__(6);
 
 	var ReactDOMEmptyComponent = function (instantiate) {
@@ -16746,7 +17463,7 @@ module.exports =
 	module.exports = ReactDOMEmptyComponent;
 
 /***/ },
-/* 127 */
+/* 130 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -16764,7 +17481,7 @@ module.exports =
 
 	var ReactElement = __webpack_require__(11);
 
-	var mapObject = __webpack_require__(103);
+	var mapObject = __webpack_require__(106);
 
 	/**
 	 * Create a factory that creates HTML tag elements.
@@ -16774,7 +17491,7 @@ module.exports =
 	 */
 	function createDOMFactory(tag) {
 	  if (process.env.NODE_ENV !== 'production') {
-	    var ReactElementValidator = __webpack_require__(72);
+	    var ReactElementValidator = __webpack_require__(73);
 	    return ReactElementValidator.createFactory(tag);
 	  }
 	  return ReactElement.createFactory(tag);
@@ -16928,7 +17645,7 @@ module.exports =
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
 
 /***/ },
-/* 128 */
+/* 131 */
 /***/ function(module, exports) {
 
 	/**
@@ -16951,7 +17668,7 @@ module.exports =
 	module.exports = ReactDOMFeatureFlags;
 
 /***/ },
-/* 129 */
+/* 132 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -16990,7 +17707,7 @@ module.exports =
 	module.exports = ReactDOMIDOperations;
 
 /***/ },
-/* 130 */
+/* 133 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -17010,7 +17727,7 @@ module.exports =
 	    _assign = __webpack_require__(5);
 
 	var DisabledInputUtils = __webpack_require__(29);
-	var DOMPropertyOperations = __webpack_require__(65);
+	var DOMPropertyOperations = __webpack_require__(66);
 	var LinkedValueUtils = __webpack_require__(41);
 	var ReactDOMComponentTree = __webpack_require__(6);
 	var ReactUpdates = __webpack_require__(12);
@@ -17243,7 +17960,7 @@ module.exports =
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
 
 /***/ },
-/* 131 */
+/* 134 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -17262,7 +17979,7 @@ module.exports =
 	var debugTool = null;
 
 	if (process.env.NODE_ENV !== 'production') {
-	  var ReactDOMDebugTool = __webpack_require__(125);
+	  var ReactDOMDebugTool = __webpack_require__(128);
 	  debugTool = ReactDOMDebugTool;
 	}
 
@@ -17270,7 +17987,7 @@ module.exports =
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
 
 /***/ },
-/* 132 */
+/* 135 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -17319,7 +18036,7 @@ module.exports =
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
 
 /***/ },
-/* 133 */
+/* 136 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -17337,9 +18054,9 @@ module.exports =
 
 	var _assign = __webpack_require__(5);
 
-	var ReactChildren = __webpack_require__(66);
+	var ReactChildren = __webpack_require__(67);
 	var ReactDOMComponentTree = __webpack_require__(6);
-	var ReactDOMSelect = __webpack_require__(70);
+	var ReactDOMSelect = __webpack_require__(71);
 
 	var warning = __webpack_require__(2);
 	var didWarnInvalidOptionChildren = false;
@@ -17448,7 +18165,7 @@ module.exports =
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
 
 /***/ },
-/* 134 */
+/* 137 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -17466,8 +18183,8 @@ module.exports =
 
 	var ExecutionEnvironment = __webpack_require__(7);
 
-	var getNodeForCharacterOffset = __webpack_require__(172);
-	var getTextContentAccessor = __webpack_require__(87);
+	var getNodeForCharacterOffset = __webpack_require__(175);
+	var getTextContentAccessor = __webpack_require__(88);
 
 	/**
 	 * While `isCollapsed` is available on the Selection object and `collapsed`
@@ -17665,7 +18382,7 @@ module.exports =
 	module.exports = ReactDOMSelection;
 
 /***/ },
-/* 135 */
+/* 138 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -17685,7 +18402,7 @@ module.exports =
 	    _assign = __webpack_require__(5);
 
 	var DOMChildrenOperations = __webpack_require__(37);
-	var DOMLazyTree = __webpack_require__(20);
+	var DOMLazyTree = __webpack_require__(19);
 	var ReactDOMComponentTree = __webpack_require__(6);
 	var ReactInstrumentation = __webpack_require__(8);
 
@@ -17842,7 +18559,7 @@ module.exports =
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
 
 /***/ },
-/* 136 */
+/* 139 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -18003,7 +18720,7 @@ module.exports =
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
 
 /***/ },
-/* 137 */
+/* 140 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -18145,7 +18862,7 @@ module.exports =
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
 
 /***/ },
-/* 138 */
+/* 141 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -18161,7 +18878,7 @@ module.exports =
 
 	'use strict';
 
-	var DOMProperty = __webpack_require__(19);
+	var DOMProperty = __webpack_require__(18);
 	var EventPluginRegistry = __webpack_require__(30);
 	var ReactComponentTreeDevtool = __webpack_require__(10);
 
@@ -18263,7 +18980,7 @@ module.exports =
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
 
 /***/ },
-/* 139 */
+/* 142 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -18336,7 +19053,7 @@ module.exports =
 	module.exports = ReactDefaultBatchingStrategy;
 
 /***/ },
-/* 140 */
+/* 143 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -18352,24 +19069,24 @@ module.exports =
 
 	'use strict';
 
-	var BeforeInputEventPlugin = __webpack_require__(109);
-	var ChangeEventPlugin = __webpack_require__(111);
-	var DefaultEventPluginOrder = __webpack_require__(113);
-	var EnterLeaveEventPlugin = __webpack_require__(114);
-	var HTMLDOMPropertyConfig = __webpack_require__(116);
-	var ReactComponentBrowserEnvironment = __webpack_require__(68);
-	var ReactDOMComponent = __webpack_require__(123);
+	var BeforeInputEventPlugin = __webpack_require__(112);
+	var ChangeEventPlugin = __webpack_require__(114);
+	var DefaultEventPluginOrder = __webpack_require__(116);
+	var EnterLeaveEventPlugin = __webpack_require__(117);
+	var HTMLDOMPropertyConfig = __webpack_require__(119);
+	var ReactComponentBrowserEnvironment = __webpack_require__(69);
+	var ReactDOMComponent = __webpack_require__(126);
 	var ReactDOMComponentTree = __webpack_require__(6);
-	var ReactDOMEmptyComponent = __webpack_require__(126);
-	var ReactDOMTreeTraversal = __webpack_require__(137);
-	var ReactDOMTextComponent = __webpack_require__(135);
-	var ReactDefaultBatchingStrategy = __webpack_require__(139);
-	var ReactEventListener = __webpack_require__(142);
-	var ReactInjection = __webpack_require__(144);
-	var ReactReconcileTransaction = __webpack_require__(150);
-	var SVGDOMPropertyConfig = __webpack_require__(154);
-	var SelectEventPlugin = __webpack_require__(155);
-	var SimpleEventPlugin = __webpack_require__(156);
+	var ReactDOMEmptyComponent = __webpack_require__(129);
+	var ReactDOMTreeTraversal = __webpack_require__(140);
+	var ReactDOMTextComponent = __webpack_require__(138);
+	var ReactDefaultBatchingStrategy = __webpack_require__(142);
+	var ReactEventListener = __webpack_require__(145);
+	var ReactInjection = __webpack_require__(147);
+	var ReactReconcileTransaction = __webpack_require__(153);
+	var SVGDOMPropertyConfig = __webpack_require__(157);
+	var SelectEventPlugin = __webpack_require__(158);
+	var SimpleEventPlugin = __webpack_require__(159);
 
 	var alreadyInjected = false;
 
@@ -18425,7 +19142,7 @@ module.exports =
 	};
 
 /***/ },
-/* 141 */
+/* 144 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -18463,7 +19180,7 @@ module.exports =
 	module.exports = ReactEventEmitterMixin;
 
 /***/ },
-/* 142 */
+/* 145 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -18481,14 +19198,14 @@ module.exports =
 
 	var _assign = __webpack_require__(5);
 
-	var EventListener = __webpack_require__(60);
+	var EventListener = __webpack_require__(61);
 	var ExecutionEnvironment = __webpack_require__(7);
 	var PooledClass = __webpack_require__(17);
 	var ReactDOMComponentTree = __webpack_require__(6);
 	var ReactUpdates = __webpack_require__(12);
 
 	var getEventTarget = __webpack_require__(53);
-	var getUnboundedScrollPosition = __webpack_require__(98);
+	var getUnboundedScrollPosition = __webpack_require__(101);
 
 	/**
 	 * Find the deepest React component completely containing the root of the
@@ -18625,7 +19342,7 @@ module.exports =
 	module.exports = ReactEventListener;
 
 /***/ },
-/* 143 */
+/* 146 */
 /***/ function(module, exports) {
 
 	/**
@@ -18667,7 +19384,7 @@ module.exports =
 	module.exports = ReactHostOperationHistoryDevtool;
 
 /***/ },
-/* 144 */
+/* 147 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -18683,14 +19400,14 @@ module.exports =
 
 	'use strict';
 
-	var DOMProperty = __webpack_require__(19);
+	var DOMProperty = __webpack_require__(18);
 	var EventPluginHub = __webpack_require__(23);
 	var EventPluginUtils = __webpack_require__(39);
 	var ReactComponentEnvironment = __webpack_require__(43);
-	var ReactClass = __webpack_require__(67);
-	var ReactEmptyComponent = __webpack_require__(73);
+	var ReactClass = __webpack_require__(68);
+	var ReactEmptyComponent = __webpack_require__(74);
 	var ReactBrowserEventEmitter = __webpack_require__(31);
-	var ReactHostComponent = __webpack_require__(75);
+	var ReactHostComponent = __webpack_require__(76);
 	var ReactUpdates = __webpack_require__(12);
 
 	var ReactInjection = {
@@ -18708,7 +19425,7 @@ module.exports =
 	module.exports = ReactInjection;
 
 /***/ },
-/* 145 */
+/* 148 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -18750,7 +19467,7 @@ module.exports =
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
 
 /***/ },
-/* 146 */
+/* 149 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -18766,7 +19483,7 @@ module.exports =
 
 	'use strict';
 
-	var adler32 = __webpack_require__(167);
+	var adler32 = __webpack_require__(170);
 
 	var TAG_END = /\/?>/;
 	var COMMENT_START = /^<\!\-\-/;
@@ -18805,7 +19522,7 @@ module.exports =
 	module.exports = ReactMarkupChecksum;
 
 /***/ },
-/* 147 */
+/* 150 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -18826,14 +19543,14 @@ module.exports =
 	var ReactComponentEnvironment = __webpack_require__(43);
 	var ReactInstanceMap = __webpack_require__(25);
 	var ReactInstrumentation = __webpack_require__(8);
-	var ReactMultiChildUpdateTypes = __webpack_require__(78);
+	var ReactMultiChildUpdateTypes = __webpack_require__(79);
 
 	var ReactCurrentOwner = __webpack_require__(14);
-	var ReactReconciler = __webpack_require__(21);
-	var ReactChildReconciler = __webpack_require__(118);
+	var ReactReconciler = __webpack_require__(20);
+	var ReactChildReconciler = __webpack_require__(121);
 
 	var emptyFunction = __webpack_require__(9);
-	var flattenChildren = __webpack_require__(170);
+	var flattenChildren = __webpack_require__(173);
 	var invariant = __webpack_require__(3);
 
 	/**
@@ -19264,7 +19981,7 @@ module.exports =
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
 
 /***/ },
-/* 148 */
+/* 151 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -19364,7 +20081,7 @@ module.exports =
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
 
 /***/ },
-/* 149 */
+/* 152 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -19411,7 +20128,7 @@ module.exports =
 	module.exports = ReactPureComponent;
 
 /***/ },
-/* 150 */
+/* 153 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -19429,10 +20146,10 @@ module.exports =
 
 	var _assign = __webpack_require__(5);
 
-	var CallbackQueue = __webpack_require__(64);
+	var CallbackQueue = __webpack_require__(65);
 	var PooledClass = __webpack_require__(17);
 	var ReactBrowserEventEmitter = __webpack_require__(31);
-	var ReactInputSelection = __webpack_require__(76);
+	var ReactInputSelection = __webpack_require__(77);
 	var ReactInstrumentation = __webpack_require__(8);
 	var Transaction = __webpack_require__(27);
 	var ReactUpdateQueue = __webpack_require__(48);
@@ -19595,7 +20312,7 @@ module.exports =
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
 
 /***/ },
-/* 151 */
+/* 154 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -19611,7 +20328,7 @@ module.exports =
 
 	'use strict';
 
-	var ReactOwner = __webpack_require__(148);
+	var ReactOwner = __webpack_require__(151);
 
 	var ReactRef = {};
 
@@ -19680,7 +20397,7 @@ module.exports =
 	module.exports = ReactRef;
 
 /***/ },
-/* 152 */
+/* 155 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -19701,7 +20418,7 @@ module.exports =
 	var PooledClass = __webpack_require__(17);
 	var Transaction = __webpack_require__(27);
 	var ReactInstrumentation = __webpack_require__(8);
-	var ReactServerUpdateQueue = __webpack_require__(153);
+	var ReactServerUpdateQueue = __webpack_require__(156);
 
 	/**
 	 * Executed within the scope of the `Transaction` instance. Consider these as
@@ -19776,7 +20493,7 @@ module.exports =
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
 
 /***/ },
-/* 153 */
+/* 156 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -19923,7 +20640,7 @@ module.exports =
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
 
 /***/ },
-/* 154 */
+/* 157 */
 /***/ function(module, exports) {
 
 	/**
@@ -20230,7 +20947,7 @@ module.exports =
 	module.exports = SVGDOMPropertyConfig;
 
 /***/ },
-/* 155 */
+/* 158 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -20250,11 +20967,11 @@ module.exports =
 	var EventPropagators = __webpack_require__(24);
 	var ExecutionEnvironment = __webpack_require__(7);
 	var ReactDOMComponentTree = __webpack_require__(6);
-	var ReactInputSelection = __webpack_require__(76);
+	var ReactInputSelection = __webpack_require__(77);
 	var SyntheticEvent = __webpack_require__(15);
 
-	var getActiveElement = __webpack_require__(62);
-	var isTextInputElement = __webpack_require__(89);
+	var getActiveElement = __webpack_require__(63);
+	var isTextInputElement = __webpack_require__(90);
 	var keyOf = __webpack_require__(16);
 	var shallowEqual = __webpack_require__(36);
 
@@ -20431,7 +21148,7 @@ module.exports =
 	module.exports = SelectEventPlugin;
 
 /***/ },
-/* 156 */
+/* 159 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -20450,20 +21167,20 @@ module.exports =
 	var _prodInvariant = __webpack_require__(4);
 
 	var EventConstants = __webpack_require__(13);
-	var EventListener = __webpack_require__(60);
+	var EventListener = __webpack_require__(61);
 	var EventPropagators = __webpack_require__(24);
 	var ReactDOMComponentTree = __webpack_require__(6);
-	var SyntheticAnimationEvent = __webpack_require__(157);
-	var SyntheticClipboardEvent = __webpack_require__(158);
+	var SyntheticAnimationEvent = __webpack_require__(160);
+	var SyntheticClipboardEvent = __webpack_require__(161);
 	var SyntheticEvent = __webpack_require__(15);
-	var SyntheticFocusEvent = __webpack_require__(161);
-	var SyntheticKeyboardEvent = __webpack_require__(163);
+	var SyntheticFocusEvent = __webpack_require__(164);
+	var SyntheticKeyboardEvent = __webpack_require__(166);
 	var SyntheticMouseEvent = __webpack_require__(33);
-	var SyntheticDragEvent = __webpack_require__(160);
-	var SyntheticTouchEvent = __webpack_require__(164);
-	var SyntheticTransitionEvent = __webpack_require__(165);
+	var SyntheticDragEvent = __webpack_require__(163);
+	var SyntheticTouchEvent = __webpack_require__(167);
+	var SyntheticTransitionEvent = __webpack_require__(168);
 	var SyntheticUIEvent = __webpack_require__(26);
-	var SyntheticWheelEvent = __webpack_require__(166);
+	var SyntheticWheelEvent = __webpack_require__(169);
 
 	var emptyFunction = __webpack_require__(9);
 	var getEventCharCode = __webpack_require__(51);
@@ -21070,7 +21787,7 @@ module.exports =
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
 
 /***/ },
-/* 157 */
+/* 160 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -21114,7 +21831,7 @@ module.exports =
 	module.exports = SyntheticAnimationEvent;
 
 /***/ },
-/* 158 */
+/* 161 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -21157,7 +21874,7 @@ module.exports =
 	module.exports = SyntheticClipboardEvent;
 
 /***/ },
-/* 159 */
+/* 162 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -21198,7 +21915,7 @@ module.exports =
 	module.exports = SyntheticCompositionEvent;
 
 /***/ },
-/* 160 */
+/* 163 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -21239,7 +21956,7 @@ module.exports =
 	module.exports = SyntheticDragEvent;
 
 /***/ },
-/* 161 */
+/* 164 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -21280,7 +21997,7 @@ module.exports =
 	module.exports = SyntheticFocusEvent;
 
 /***/ },
-/* 162 */
+/* 165 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -21322,7 +22039,7 @@ module.exports =
 	module.exports = SyntheticInputEvent;
 
 /***/ },
-/* 163 */
+/* 166 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -21341,7 +22058,7 @@ module.exports =
 	var SyntheticUIEvent = __webpack_require__(26);
 
 	var getEventCharCode = __webpack_require__(51);
-	var getEventKey = __webpack_require__(171);
+	var getEventKey = __webpack_require__(174);
 	var getEventModifierState = __webpack_require__(52);
 
 	/**
@@ -21411,7 +22128,7 @@ module.exports =
 	module.exports = SyntheticKeyboardEvent;
 
 /***/ },
-/* 164 */
+/* 167 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -21461,7 +22178,7 @@ module.exports =
 	module.exports = SyntheticTouchEvent;
 
 /***/ },
-/* 165 */
+/* 168 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -21505,7 +22222,7 @@ module.exports =
 	module.exports = SyntheticTransitionEvent;
 
 /***/ },
-/* 166 */
+/* 169 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -21564,7 +22281,7 @@ module.exports =
 	module.exports = SyntheticWheelEvent;
 
 /***/ },
-/* 167 */
+/* 170 */
 /***/ function(module, exports) {
 
 	/**
@@ -21613,7 +22330,7 @@ module.exports =
 	module.exports = adler32;
 
 /***/ },
-/* 168 */
+/* 171 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -21629,7 +22346,7 @@ module.exports =
 
 	'use strict';
 
-	var CSSProperty = __webpack_require__(63);
+	var CSSProperty = __webpack_require__(64);
 	var warning = __webpack_require__(2);
 
 	var isUnitlessNumber = CSSProperty.isUnitlessNumber;
@@ -21698,7 +22415,7 @@ module.exports =
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
 
 /***/ },
-/* 169 */
+/* 172 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -21720,7 +22437,7 @@ module.exports =
 	var ReactDOMComponentTree = __webpack_require__(6);
 	var ReactInstanceMap = __webpack_require__(25);
 
-	var getHostComponentFromComposite = __webpack_require__(86);
+	var getHostComponentFromComposite = __webpack_require__(87);
 	var invariant = __webpack_require__(3);
 	var warning = __webpack_require__(2);
 
@@ -21764,7 +22481,7 @@ module.exports =
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
 
 /***/ },
-/* 170 */
+/* 173 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -21844,7 +22561,7 @@ module.exports =
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
 
 /***/ },
-/* 171 */
+/* 174 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -21951,7 +22668,7 @@ module.exports =
 	module.exports = getEventKey;
 
 /***/ },
-/* 172 */
+/* 175 */
 /***/ function(module, exports) {
 
 	/**
@@ -22030,7 +22747,7 @@ module.exports =
 	module.exports = getNodeForCharacterOffset;
 
 /***/ },
-/* 173 */
+/* 176 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -22136,7 +22853,7 @@ module.exports =
 	module.exports = getVendorPrefixedEventName;
 
 /***/ },
-/* 174 */
+/* 177 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -22180,7 +22897,7 @@ module.exports =
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
 
 /***/ },
-/* 175 */
+/* 178 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -22211,7 +22928,7 @@ module.exports =
 	module.exports = quoteAttributeValueForBrowser;
 
 /***/ },
-/* 176 */
+/* 179 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -22227,17 +22944,17 @@ module.exports =
 
 	'use strict';
 
-	var ReactMount = __webpack_require__(77);
+	var ReactMount = __webpack_require__(78);
 
 	module.exports = ReactMount.renderSubtreeIntoContainer;
 
 /***/ },
-/* 177 */
+/* 180 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	module.exports = __webpack_require__(117);
+	module.exports = __webpack_require__(120);
 
 
 /***/ }
