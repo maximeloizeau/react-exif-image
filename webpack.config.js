@@ -1,7 +1,6 @@
 const merge             = require('lodash.merge');
 const path              = require('path');
 const webpack           = require('webpack');
-const webpackConfig     = require('webpack-config');
 
 // DIRs & ENVs
 const SRC_DIR = path.resolve('./src');
@@ -38,7 +37,6 @@ const config = {
   },
 
   module: {
-
     loaders: [
       {
         test: /\.(jsx|js)?$/,
@@ -55,7 +53,6 @@ const appConfig = merge({}, config, {
     path: BUILD_DIR,
     filename: 'index.js'
   }
-
 });
 
 module.exports = appConfig;
