@@ -35,7 +35,7 @@ export default class ExifImage extends React.Component {
     loadImage.parseMetaData(imageBlob,
       (data) => {
         const orientation = (data.exif)?data.exif.get('Orientation'):0;
-        options.orientation = orientation;
+        if(options.orientation === undefined) options.orientation = orientation;
 
         loadImage(
           imageBlob,
