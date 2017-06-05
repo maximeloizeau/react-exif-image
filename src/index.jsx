@@ -30,25 +30,33 @@ export default class ExifImage extends React.Component {
 
   processImageBuffer({response, contentType}){
     let options = this.props.options || {};
+    console.log('pakage', options.orientation);
 
     let imageBlob = new Blob([response], {type: contentType});
-    loadImage.parseMetaData(imageBlob,
-      (data) => {
-        const orientation = (data.exif)?data.exif.get('Orientation'):0;
-        if(options.orientation === undefined) options.orientation = orientation;
+    loadImage.parseMetaData(imageBlob, (data) => {
+      const orientation = (data.exif)?data.exif.get('Orientation'):0;
+      if(options.orientation === undefined) options.orientation = orientation;
 
-        loadImage(
-          imageBlob,
-          (canvas) => {
-            findDOMNode(this).querySelector('canvas').height = canvas.height;
-            findDOMNode(this).querySelector('canvas').width = canvas.width;
-            findDOMNode(this).querySelector('canvas').getContext('2d').drawImage(canvas, 0, 0);
-            return canvas;
-          },
-          options
-        );
-      }
-    );
+      loadImage( imageBlob, (canvas) => {
+        /**
+         * Create dummy canvas so we can get the url data
+         */
+        let ctx = document.createElement('canvas');
+        ctx.height = canvas.height;
+        ctx.width = canvas.width;
+        ctx.getContext('2d').drawImage(canvas, 0, 0);
+        let dataURL = ctx.toDataURL('image/png')
+          .replace(/^data:image\/(png|jpg);base64,/, '');
+
+        /**
+         * Create new image element to render inside the canvas
+         */
+        let imageEl = findDOMNode(this).querySelector('img');
+        imageEl.width = canvas.width;
+        imageEl.height = canvas.height;
+        imageEl.src = 'data:image/gif;base64, ' + dataURL;
+      }, options);
+    });
   }
 
   handleUrlUpdate(url) {
@@ -69,8 +77,8 @@ export default class ExifImage extends React.Component {
 
   render() {
     return (
-      <div className="exifImage-container">
-        <canvas></canvas>
+      <div className="exif-container">
+        <img />
       </div>
     );
   }
